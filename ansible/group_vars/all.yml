@@ -1,0 +1,2 @@
+ansible_user: nicholaswisnewski
+network_cidr: "{{ lookup('ansible.builtin.env', 'NETWORK_CIDR') }}"

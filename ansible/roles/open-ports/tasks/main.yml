@@ -1,0 +1,26 @@
+---
+- name: Open microk8s tcp ports
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    port: "{{ item }}"
+  loop:
+    - 16443
+    - 10250
+    - 10255
+    - 25000
+    - 12379
+    - 10257
+    - 10259
+    - 19001
+    - 32000
+    - 8443
+    - 443
+
+- name: Open microK8s udp ports
+  community.general.ufw:
+    rule: allow
+    proto: udp 
+    port: 4789
+
+

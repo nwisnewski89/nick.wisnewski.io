@@ -1,0 +1,17 @@
+- hosts: controller-node
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: Enabled microK8s addons
+      ansible.builtin.shell:
+        cmd: |
+          microk8s enable {{ item }}
+      loop:
+        - cert-manager
+        - dns
+        - dashboard
+        - ingress
+        - registry
+        - community
+
+    
