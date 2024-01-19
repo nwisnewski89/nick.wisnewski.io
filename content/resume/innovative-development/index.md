@@ -23,4 +23,4 @@ Started as a manual QA engineer testing interal busines applications at Comcast.
 
 ## Reason for Leaving
 
-Had the opportunity to be employed directly by a software company, rather than working as a contractor, which I felt would offer more stability.
+Had the opportunity to be employed directly by a software company Nuix, rather than working as a contractor, which I felt would offer more stability and career growth.

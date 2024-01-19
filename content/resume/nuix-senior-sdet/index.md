@@ -27,4 +27,4 @@ Re-joined the Investigate (formally Web Review) QA team after my brief tenure at
 
 ## Reason for Leaving
 
-Desired to focus more on automation and the manager of the DevOps team Nick Eldrige supported my interest to transition over.
+Desired to focus more on infrastructue automation and the manager of the DevOps team Nick Eldrige supported my interest in transitioning over.

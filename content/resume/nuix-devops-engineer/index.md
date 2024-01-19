@@ -9,7 +9,7 @@ description: "DevOps Engineer"
 
 ## Role Recap
 
-Joined the DevOps team as the organization was nearly wrapped up migrating resources from OpenStack to AWS. The manager of the team, Nick Eldridge was an inspiring mentor who taught me most of what I know. It was a 2-person team that later added a 3rd member after 4 months on the team. The primary focus of the role was acting as the SREs of the internal application infrastructure, multiple Jenkins instances, JFrog Artifactory, Bitbucket, SonarQube, and SVN server with Fisheye Crucible. I was responsible for developing the Jenkins shared pipeline library, Terraform modules for application deployments, Ansible playbooks for application provisioning, and a 2-week on-call rotation for developer support. We operated in SAFE (Scaled Agile Framework), and at the end of each 2-week sprint, we would demo to application teams.
+Joined the DevOps team as the organization was nearly wrapped up migrating resources from OpenStack to AWS. The manager of the team, Nick Eldridge was an inspiring mentor who taught me most of what I know. It was a 2-person team that later added a 3rd member after 4 months on the team. The primary focus of the role was acting as the SREs of the internal application infrastructure, multiple Jenkins instances, JFrog Artifactory, Bitbucket, SonarQube, and SVN server with Fisheye Crucible. I was responsible for developing the Jenkins shared pipeline library, Terraform modules for application deployments, Ansible playbooks for application provisioning, and a 2-week on-call rotation for developer support. We operated in SAFe (Scaled Agile Framework), and at the end of each 2-week sprint, we would demo to application teams.
 
 ## Accomplishments
 
@@ -25,4 +25,4 @@ Joined the DevOps team as the organization was nearly wrapped up migrating resou
 
 ## Reason for Leaving
 
-Wanted to gain experience managing publicly facing sites rather than just internal development infrastructure. Had some disagreements with the direction the team was going in, especially not getting involved with the Sydney team developing the new SAAS offering initiative.
+Wanted to gain experience managing publicly facing sites rather than just internal development infrastructure. 

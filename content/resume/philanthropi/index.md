@@ -45,4 +45,4 @@ the docker image mounted in the YAML file. The ejson binary was installed during
 
 ## Reason for Leaving
 
-Was concerned with the stability of the company due to struggles finding funding, as well as the loss of key resources - Lead QA position vacated and not backfilled, as well as Lead DevOps.
+Was concerned with the stability of the company due to struggles finding funding, as well as the loss of key resources - Lead QA Engineer position vacated and not backfilled, as well as Lead DevOps Egineer.

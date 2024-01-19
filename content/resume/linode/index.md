@@ -25,4 +25,4 @@ Was on the front-end team responsible for modernizing the Cloud Manager UI to a 
 
 ## Reason for Leaving
 
-Upper management was rapidly shifting project priorities, and I had the opportunity to return to Nuix which ultimately at the time felt like a better fit for where I was at in my career. But the position was a very good learning experience, and I gained a lot of technical knowledge especially with Docker and Python.
+Upper management was rapidly shifting project priorities, and I had the opportunity to return to Nuix which ultimately at the time felt like a better fit for where I was at in my career. But, the position was a very good learning experience, and I gained a lot of technical knowledge especially with Docker and Python.

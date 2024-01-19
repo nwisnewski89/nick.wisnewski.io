@@ -25,4 +25,4 @@ Worked on the Nuix Web Review product team. Responsibilities included working wi
 
 ## Reason for Leaving
 
-The opportunity presented by Linode was very intriguing.
+The opportunity presented by Linode was very intriguing, desired to work with different technology stacks.
