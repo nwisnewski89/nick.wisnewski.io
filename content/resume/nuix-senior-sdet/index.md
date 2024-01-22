@@ -9,7 +9,7 @@ description: "Senior SDET"
 
 ## Role Recap
 
-Re-joined the Investigate (formally Web Review) QA team after my brief tenure at Linode. Focused primarily on continuing scaling out the  <a href="https://gebish.org/" target="_blank">Geb</a> test automation suite for the Investigate product and develop new automation to support all aspects of the software development lifecyle. Then started to take on the role of the DevOps specialist on the Investigate team contributing to the Ansible Playbooks, Terraform deployments, and Jenkins jobs for provisioning ephemeral testing environments. Coached junior team members to be solid automation contributors, triaged customer issues, developed automated test cases for new features each sprint, and preformed regression prior to product releases.
+Re-joined the Investigate (formally Web Review) QA team after my brief tenure at Linode. Focused primarily on continuing scaling out the <a href="https://gebish.org/" target="_blank">Geb</a> test automation suite for the Investigate product and develop new automation to support all aspects of the software development lifecyle. Then started to take on the role of the DevOps specialist on the Investigate team contributing to the Ansible Playbooks, Terraform deployments, and Jenkins jobs for provisioning ephemeral testing environments. Coached junior team members to be solid automation contributors, triaged customer issues, developed automated test cases for new features each sprint, and preformed regression prior to product releases.
 
 ## Accomplishments
 

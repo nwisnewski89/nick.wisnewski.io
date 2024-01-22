@@ -1,8 +1,7 @@
-resource "google_project_iam_custom_role" "k8s-role" {
-  role_id = "k8srole"
-  title   = "k8s Cluster Role"
-
-  project    = var.project_id
+resource "google_project_iam_custom_role" "k8s" {
+  role_id = "${var.name}_k8s_${var.environment}_role"
+  title   = "K8s service account cluster role"
+  project = var.project_id
 
   permissions = [
     "compute.addresses.list",
@@ -23,22 +22,22 @@ resource "google_project_iam_custom_role" "k8s-role" {
   ]
 }
 
-resource "google_service_account" "k8s-service-account" {
-  account_id = "k8sserviceaccount"
+resource "google_service_account" "k8s" {
+  account_id = "${var.name}-k8s-${var.environment}"
   project    = var.project_id
 }
 
-resource "google_project_iam_member" "k8s-role-member" {
-  role       = google_project_iam_custom_role.k8s-role.id
-  project    = var.project_id
-  member     = google_service_account.k8s-service-account.member
+resource "google_project_iam_member" "iam_member_kluster" {
+  role    = google_project_iam_custom_role.k8s.id
+  project = var.project_id
+  member  = google_service_account.k8s.member
 }
 
 resource "google_project_iam_custom_role" "kubeip" {
-  role_id = "kubeip"
-  title   = "kubeip Role"
+  role_id = "${var.name}_kubeip_${var.environment}_role"
+  title   = "K8s kubeip service account cluster role"
+  project = var.project_id
 
-  project    = var.project_id
 
   permissions = [
     "compute.addresses.list",
@@ -57,13 +56,13 @@ resource "google_project_iam_custom_role" "kubeip" {
 }
 
 resource "google_service_account" "kubeip" {
-  account_id = "kubeip-serviceaccount"
+  account_id = "${var.name}-kubeip-${var.environment}"
   project    = var.project_id
-
+  depends_on = [google_project_iam_custom_role.kubeip]
 }
 
 resource "google_project_iam_member" "iam_member_kubeip" {
-  role       = google_project_iam_custom_role.kubeip.id
-  project    = var.project_id
-  member     = google_service_account.kubeip.member
+  role    = google_project_iam_custom_role.kubeip.id
+  project = var.project_id
+  member  = google_service_account.kubeip.member
 }

@@ -1,0 +1,47 @@
+name: Main merge workflow
+
+on:
+  push:
+    branches:
+      - main
+
+job:
+  set-build-manifest:
+    runs-on: ubuntu-latest
+    outputs:
+      build-site: ${{ steps.changes.outputs.site }}
+      build-ingress: ${{ steps.changes.outputs.ingress }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get updated files
+        id: changes
+          with:
+            filtes: |
+              site:
+                - ['scr/**', 'content/**', 'docker/site/**']
+              ingress:
+                - 'docker/ingress-service/**'
+              site-resources:
+                - 'terraform/modules/site-resources/**'
+              k8-resources:
+                - 'terraform/modules/site-resources/**'
+    
+    build-site:
+      needs: set-build-manifest
+      if: ${{ needs.set-build-manifest.outputs.build-site == true }}
+      uses: ./.github/workflows/build-image.yml
+      with:
+        image-name: nick-wisnewski-io
+        dockerfile: docker/site/Dockerfile
+        tag: "v${{ github.run_number }}"
+
+    build-ingress:
+      needs: set-build-manifest
+      if: ${{ needs.set-build-manifest.outputs.build-ingress == true }}
+      uses: ./.github/workflows/build-image.yml
+      with:
+        image-name: ingress-server
+        dockerfile: docker/ingress-server/Dockerfile
+        tag: "v${{ github.run_number }}"
+    

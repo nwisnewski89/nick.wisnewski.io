@@ -59,20 +59,23 @@ resource "google_container_node_pool" "ingress_pool" {
 
   management {
     auto_repair  = true
-    auto_upgrade = false
+    auto_upgrade = true
   }
 
   node_config {
     machine_type    = "e2-micro"
-    disk_size_gb    = 20
+    disk_size_gb    = 10
     disk_type       = "pd-standard"
     image_type      = "UBUNTU_CONTAINERD"
     preemptible     = false
-    service_account = google_service_account.k8s-service-account.email
+    service_account = google_service_account.k8s.email
     oauth_scopes    = local.oauth_scopes
 
-    tags = [local.ingress_tag]
-    
+    tags = [
+      local.ingress_tag,
+      local.ssh_tag
+    ]
+
     taint {
       key    = local.ingress_pool
       value  = true
@@ -99,12 +102,16 @@ resource "google_container_node_pool" "app_pool" {
   }
 
   node_config {
-    machine_type    = "e2-small"
+    machine_type    = "e2-medium"
     disk_size_gb    = 20
     disk_type       = "pd-standard"
     image_type      = "UBUNTU_CONTAINERD"
     preemptible     = true
-    service_account = google_service_account.k8s-service-account.email
+    service_account = google_service_account.k8s.email
     oauth_scopes    = local.oauth_scopes
+
+    tags = [
+      local.ssh_tag
+    ]
   }
 }

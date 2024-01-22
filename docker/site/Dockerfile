@@ -20,7 +20,7 @@ RUN rm -rf /etc/nginx/conf.d
 
 RUN rm -rf /etc/nginx/nginx.conf.default
 
-COPY ./docker/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/site/nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /usr/share/nginx/html
 

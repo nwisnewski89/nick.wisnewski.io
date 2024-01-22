@@ -1,5 +1,10 @@
+provider "google" {
+  region  = var.region
+  project = var.project_id
+}
+
 provider "kubernetes" {
-  host                   = "https://${module.gke.endpoint}"
-  token                  = data.google_client_config.default.access_token
-  cluster_ca_certificate = base64decode(module.gke.ca_certificate)
+  host                   = data.terraform_remote_state.site_resources.outputs.kubernetes_config.host
+  token                  = data.terraform_remote_state.site_resources.outputs.kubernetes_config.token
+  cluster_ca_certificate = data.terraform_remote_state.site_resources.outputs.kubernetes_config.cluster_ca_certificate
 }

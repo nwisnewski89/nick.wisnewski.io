@@ -4,7 +4,7 @@ services:
     image: nick-wisnewski-io
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/site/Dockerfile
       target: server
     ports:
       - 8080:8080
