@@ -5,7 +5,7 @@ on:
     branches:
       - main
 
-job:
+jobs:
   set-build-manifest:
     runs-on: ubuntu-latest
     outputs:
@@ -36,6 +36,7 @@ job:
         image-name: nick-wisnewski-io
         dockerfile: docker/site/Dockerfile
         tag: "v${{ github.run_number }}"
+      secrets: inherit
 
     build-ingress:
       needs: set-build-manifest
@@ -45,4 +46,5 @@ job:
         image-name: ingress-server
         dockerfile: docker/ingress-server/Dockerfile
         tag: "v${{ github.run_number }}"
+      secrets: inherit
     
