@@ -28,23 +28,23 @@ jobs:
             k8-resources:
               - 'terraform/modules/site-resources/**'
     
-    build-site:
-      needs: set-build-manifest
-      if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
-      uses: ./.github/workflows/build-image.yml
-      with:
-        image-name: nick-wisnewski-io
-        dockerfile: docker/site/Dockerfile
-        tag: "v${{ github.run_number }}"
-      secrets: inherit
+  build-site:
+    needs: set-build-manifest
+    if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
+    uses: ./.github/workflows/build-image.yml
+    with:
+      image-name: nick-wisnewski-io
+      dockerfile: docker/site/Dockerfile
+      tag: "v${{ github.run_number }}"
+    secrets: inherit
 
-    build-ingress:
-      needs: set-build-manifest
-      if: ${{ needs.set-build-manifest.outputs.build-ingress == 'true' }}
-      uses: ./.github/workflows/build-image.yml
-      with:
-        image-name: ingress-server
-        dockerfile: docker/ingress-server/Dockerfile
-        tag: "v${{ github.run_number }}"
-      secrets: inherit
-    
+  build-ingress:
+    needs: set-build-manifest
+    if: ${{ needs.set-build-manifest.outputs.build-ingress == 'true' }}
+    uses: ./.github/workflows/build-image.yml
+    with:
+      image-name: ingress-server
+      dockerfile: docker/ingress-server/Dockerfile
+      tag: "v${{ github.run_number }}"
+    secrets: inherit
+  
