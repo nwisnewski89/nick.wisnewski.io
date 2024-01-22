@@ -15,17 +15,18 @@ job:
       - uses: actions/checkout@v4
 
       - name: Get updated files
+        uses: dorny/paths-filter@v2
         id: changes
-          with:
-            filtes: |
-              site:
-                - ['scr/**', 'content/**', 'docker/site/**']
-              ingress:
-                - 'docker/ingress-service/**'
-              site-resources:
-                - 'terraform/modules/site-resources/**'
-              k8-resources:
-                - 'terraform/modules/site-resources/**'
+        with:
+          filters: |
+            site:
+              - ['scr/**', 'content/**', 'docker/site/**']
+            ingress:
+              - 'docker/ingress-service/**'
+            site-resources:
+              - 'terraform/modules/site-resources/**'
+            k8-resources:
+              - 'terraform/modules/site-resources/**'
     
     build-site:
       needs: set-build-manifest
