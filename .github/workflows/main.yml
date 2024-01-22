@@ -30,7 +30,7 @@ jobs:
     
     build-site:
       needs: set-build-manifest
-      if: ${{ needs.set-build-manifest.outputs.build-site == true }}
+      if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
       uses: ./.github/workflows/build-image.yml
       with:
         image-name: nick-wisnewski-io
@@ -40,7 +40,7 @@ jobs:
 
     build-ingress:
       needs: set-build-manifest
-      if: ${{ needs.set-build-manifest.outputs.build-ingress == true }}
+      if: ${{ needs.set-build-manifest.outputs.build-ingress == 'true' }}
       uses: ./.github/workflows/build-image.yml
       with:
         image-name: ingress-server
