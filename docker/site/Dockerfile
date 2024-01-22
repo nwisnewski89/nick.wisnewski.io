@@ -27,5 +27,5 @@ WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 
 COPY --from=build /app/public .
-#diff
+
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

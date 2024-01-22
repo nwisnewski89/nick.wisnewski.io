@@ -9,5 +9,5 @@ RUN rm -rf /etc/nginx/conf.d
 RUN rm -rf /etc/nginx/nginx.conf.default
 
 COPY ./docker/ingress-server/nginx.conf /etc/nginx/nginx.conf
-#diff
+
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

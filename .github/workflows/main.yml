@@ -22,7 +22,7 @@ jobs:
             site:
               - ['scr/**', 'content/**', 'docker/site/**']
             ingress:
-              - 'docker/ingress-service/**'
+              - 'docker/ingress-server/**'
             site-resources:
               - 'terraform/modules/site-resources/**'
             k8-resources:
