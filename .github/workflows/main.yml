@@ -72,8 +72,7 @@ jobs:
           terraform_version: ${{ steps.tfenv.outputs.content }}
       
       - name: Deploy site resources
-        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true ||
-                needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }} 
+        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true || needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }} 
         run: |
           terraform init
           terraform apply --auto-approve
@@ -99,22 +98,19 @@ jobs:
         working-directory: terraform/modules/k8s-resources
 
       - name: Authenticate to GCP
-        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' ||
-                needs.set-build-manifest.outputs.build-ingress == 'true' }}
+        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
 
       - name: Install kubectl
-        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' ||
-                needs.set-build-manifest.outputs.build-ingress == 'true' }}
+        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}
         uses: azure/setup-kubectl@v3
         with: 
           version: 1.29.0
 
       - name: Authenticate to GKE
-        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' ||
-                needs.set-build-manifest.outputs.build-ingress == 'true' }}
+        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}
         run: |
           gcloud container clusters get-credentials wisnewski-k8s-cluster-prod  \
             --region ${{ secrets.REGION }} \
