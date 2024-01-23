@@ -19,7 +19,7 @@ jobs:
 
       - name: Build site
         if: ${{ needs.set-build-manifes.outputs.build-site == 'true' }}      
-        runs:
+        run: | 
           docker -t nick-wisnewski-io:${{ github.sha }} -f docker/site/Dockerfile .
 
       - name: Run Docker scan on site
@@ -34,7 +34,7 @@ jobs:
 
       - name: Build ingress server
         if: ${{ needs.set-build-manifes.outputs.build-site == 'true' }}      
-        runs:
+        run: |
           docker -t ingress-server:${{ github.sha }} -f docker/ingress-server/Dockerfile .
 
       - name: Run Docker scan on ingress server
