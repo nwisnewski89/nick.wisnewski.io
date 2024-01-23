@@ -24,13 +24,11 @@ jobs:
 
       - name: Run Docker scan on site
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
-        uses: snyk/actions/docker@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        uses: anchore/scan-action@v3
         with:
-          image: nick-wisnewski-io:${{ github.sha }}
-          args: --severity-threshold=high
-        continue-on-error: true
+          image: "nick-wisnewski-io:${{ github.sha }}"
+          fail-build: false
+          severity-cutoff: critical
 
       - name: Build ingress server
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}      
@@ -39,42 +37,34 @@ jobs:
 
       - name: Run Docker scan on ingress server
         if: ${{ needs.set-build-manifest.outputs.build-ingress == 'true' }}
-        uses: snyk/actions/docker@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        uses: anchore/scan-action@v3
         with:
-          image: docker/ingress-server/Dockerfile
-          args: --severity-threshold=high
-        continue-on-error: true
+          image: "ingress-server:${{ github.sha }}"
+          fail-build: false
+          severity-cutoff: critical
 
-      - name: Run scan on Gatsby Site
-        uses: snyk/actions/node@master
-        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Get terraform version
+        id: tfvenv
+        uses: juliangruber/read-file-action@v1
         with:
-          args: --severity-threshold=high
-        continue-on-error: true
+          path: terraform/modules/site-resources/.terraform-version
 
       - name: Run scan on GCP deployment
-        uses: snyk/actions/iac@master
         if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' }}
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        uses: aquasecurity/tfsec-action@v1.0.0
         with:
-          args: --severity-threshold=high
-          files: terraform/modules/site-resources
-        continue-on-error: true
+          soft_fail: true
+          github_token: ${{ secrets.PAT_TOKEN }}
+          working_directory: terraform/modules/site-resources
 
       - name: Run scan on K8s deployment
         uses: snyk/actions/iac@master
         if: ${{ needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }}
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        uses: aquasecurity/tfsec-action@v1.0.0
         with:
-          args: --severity-threshold=high
-          files: terraform/modules/k8s-resources
-        continue-on-error: true
+          soft_fail: true
+          github_token: ${{ secrets.PAT_TOKEN }}
+          working_directory: terraform/modules/k8s-resources
 
   terraform-plan:
     runs-on: ubuntu-latest
@@ -104,7 +94,7 @@ jobs:
         if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' }}
         uses: dflook/terraform-plan@v1
         with:
-          path: terraform/modules/site-resources
+          path: terraform/modules/k8s-resources
           label: K8s resources plan
           variables: |
               project_id      = "${{ secrets.PROJECT_ID }}"
