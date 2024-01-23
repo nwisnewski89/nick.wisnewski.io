@@ -27,7 +27,8 @@ jobs:
         uses: dorny/paths-filter@v2
         id: changes
         with:
-          token: ${{ secrets.PAT_TOKEN }} #needed for PR
+          token: ${{ secrets.PAT_TOKEN }}
+          base: ${{ github.event_name == 'pull_request' && 'main' || '' }}
           filters: |
             site:
               - ['scr/**', 'content/**', 'docker/site/**', '*.js', 'package.json']
