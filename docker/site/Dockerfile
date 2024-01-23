@@ -29,3 +29,4 @@ RUN rm -rf ./*
 COPY --from=build /app/public .
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
+#deploy
