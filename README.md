@@ -1,6 +1,6 @@
 # Site Build
 
-* Utilized the Gatsby.js [Starter Blog Template](https://www.gatsbyjs.com/starters/gatsbyjs/gatsby-starter-blog) and [Material UI](https://mui.com/material-ui/getting-started/) to create a simple resume site.
+* Leveraged the Gatsby.js [Starter Blog Template](https://www.gatsbyjs.com/starters/gatsbyjs/gatsby-starter-blog) and [Material UI](https://mui.com/material-ui/getting-started/) to create a simple resume site.
 * Built the static site into a docker image with an Nginx Server.
 * Created a free tier GCP account to host the application in GKE. 
 * Utilized [KubeIP](https://github.com/doitintl/kubeIP) to avoid paying for an Ingress Load Balancer in order to keep costs down.
