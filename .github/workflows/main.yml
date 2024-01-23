@@ -72,7 +72,7 @@ jobs:
           terraform_version: ${{ steps.tfenv.outputs.content }}
       
       - name: Deploy site resources
-        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true || needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }} 
+        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' || needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }} 
         run: |
           terraform init
           terraform apply --auto-approve
