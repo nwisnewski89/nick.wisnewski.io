@@ -1,4 +1,5 @@
 ## Site Build
+
 [![Known Vulnerabilities](https://snyk.io/test/github/nwisnewski89/nick.wisnewski.io/badge.svg)]
 
 - Leveraged the Gatsby.js [Starter Blog Template](https://www.gatsbyjs.com/starters/gatsbyjs/gatsby-starter-blog) and [Material UI](https://mui.com/material-ui/getting-started/) to create a simple resume site.

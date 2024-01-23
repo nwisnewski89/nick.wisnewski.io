@@ -43,12 +43,6 @@ jobs:
           fail-build: false
           severity-cutoff: critical
 
-      - name: Get terraform version
-        id: tfvenv
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: terraform/modules/site-resources/.terraform-version
-
       - name: Run scan on GCP deployment
         if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' }}
         uses: aquasecurity/tfsec-action@v1.0.0
