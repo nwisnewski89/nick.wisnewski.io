@@ -1,3 +1,7 @@
 node_modules
 .cache
 docker-compose.yml
+terraform
+docker
+.github
+.git

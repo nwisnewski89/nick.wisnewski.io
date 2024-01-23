@@ -71,7 +71,6 @@ yarn-error.log
 #Terraform
 .terraform
 terraform.tfvars
-kubeconfig-prod
+credentials.json
+kubeconfig-*
 
-#Ansible
-worker_join_cmd.txt

@@ -36,13 +36,10 @@ variable "services_cidr" {
   type        = string
 }
 
-variable "master_cidr" {
-  description = "The cidr range for the master cluster node"
-  type        = string
-}
-
 variable "name" {
   description = "Name to apply to resources"
   type        = string
   default     = "wisnewski"
 }
+
+data "google_client_config" "provider" {}
