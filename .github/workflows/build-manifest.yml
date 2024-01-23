@@ -26,8 +26,8 @@ jobs:
       - name: Get updated files
         uses: dorny/paths-filter@v2
         id: changes
-        token: ${{ secrets.PAT_TOKEN }} #needed for PR
         with:
+          token: ${{ secrets.PAT_TOKEN }} #needed for PR
           filters: |
             site:
               - ['scr/**', 'content/**', 'docker/site/**', '*.js', 'package.json']
