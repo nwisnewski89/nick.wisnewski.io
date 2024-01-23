@@ -28,7 +28,7 @@ const ResumePost = ({ data, location }) => {
     <Layout location={location} title={siteTitle}>
       <Bio />
       <Social />
-      <Education/>
+      <Education />
       <Skills />
       <ol style={{ listStyle: `none` }}>
         <h2>Professional Experience</h2>
@@ -48,7 +48,9 @@ const ResumePost = ({ data, location }) => {
                       <span itemProp="headline">{title}</span>
                     </Link>
                   </h2>
-                  <small>From {post.frontmatter.start} - To {post.frontmatter.end}</small>
+                  <small>
+                    From {post.frontmatter.start} - To {post.frontmatter.end}
+                  </small>
                 </header>
                 <section>
                   <p

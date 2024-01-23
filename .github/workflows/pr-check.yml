@@ -1,0 +1,113 @@
+name: PR Check workflow
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+jobs:
+  set-build-manifest:
+    uses: ./.github/workflows/build-manifest.yml
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: set-build-manifest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build site
+        if: ${{ needs.set-build-manifes.outputs.build-site == 'true' }}      
+        runs:
+          docker -t nick-wisnewski-io:${{ github.sha }} -f docker/site/Dockerfile .
+
+      - name: Run Docker scan on site
+        if: ${{ needs.set-build-manifes.outputs.build-site == 'true' }}
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: nick-wisnewski-io:${{ github.sha }}
+          args: --severity-threshold=high
+        continue-on-error: true
+
+      - name: Build ingress server
+        if: ${{ needs.set-build-manifes.outputs.build-site == 'true' }}      
+        runs:
+          docker -t ingress-server:${{ github.sha }} -f docker/ingress-server/Dockerfile .
+
+      - name: Run Docker scan on ingress server
+        if: ${{ needs.set-build-manifes.outputs.build-ingress == 'true' }}
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: docker/ingress-server/Dockerfile
+          args: --severity-threshold=high
+        continue-on-error: true
+
+      - name: Run scan on Gatsby Site
+        uses: snyk/actions/node@master
+        if: ${{ needs.set-build-manifes.outputs.build-site == 'true' }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+        continue-on-error: true
+
+      - name: Run scan on GCP deployment
+        uses: snyk/actions/iac@master
+        if: ${{ needs.set-build-manifes.outputs.deploy-site-resources == 'true' }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+          files: terraform/modules/site-resources
+        continue-on-error: true
+
+      - name: Run scan on K8s deployment
+        uses: snyk/actions/iac@master
+        if: ${{ needs.set-build-manifes.outputs.deploy-k8s-resources == 'true' }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+          files: terraform/modules/k8s-resources
+        continue-on-error: true
+
+  terraform-plan:
+    runs-on: ubuntu-latest
+    needs: set-build-manifest
+    if: ${{ needs.set-build-manifes.outputs.deploy-site-resources == 'true' ||  needs.set-build-manifes.outputs.deploy-k8s-resources == 'true' }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+    steps:
+      - uses: actions/checkout@v4
+    
+      - name: GCP site resources plan
+        if: ${{ needs.set-build-manifes.outputs.deploy-site-resources == 'true' }}
+        uses: dflook/terraform-plan@v1
+        with:
+          path: terraform/modules/site-resources
+          label: GCP site resources plan
+          with:
+            variables: |
+              project_id      = ${{ secrets.PROJECT_ID }}
+              region          = ${{ secrets.REGION }}
+              zone            = ${{ secrets.ZONE }}
+              subnetwork_cidr = ${{ secrets.SUBNET_CIDR }}
+              pods_cidr       = ${{ secrets.PODS_CIDR }}
+              services_cidr   = ${{ secrets.SERVICES_CIDR }}
+
+      - name: K8s resources plan
+        if: ${{ needs.set-build-manifes.outputs.deploy-site-resources == 'true' }}
+        uses: dflook/terraform-plan@v1
+        with:
+          path: terraform/modules/site-resources
+          label: K8s resources plan
+          with:
+            variables: |
+              project_id      = ${{ secrets.PROJECT_ID }}
+              region          = ${{ secrets.REGION }}
