@@ -98,8 +98,7 @@ jobs:
               zone            = "${{ secrets.ZONE }}"
               subnetwork_cidr = "${{ secrets.SUBNET_CIDR }}"
               pods_cidr       = "${{ secrets.PODS_CIDR }}"
-              services_cidr   = "${{ secrets.SERVICES_CIDR }}""
-            "
+              services_cidr   = "${{ secrets.SERVICES_CIDR }}"
 
       - name: K8s resources plan
         if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' }}
