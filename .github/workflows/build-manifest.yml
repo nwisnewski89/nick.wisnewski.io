@@ -1,0 +1,40 @@
+name: Get build manifest
+
+on: 
+  workflow_call:
+    outputs:
+      build-site: 
+        value: ${{ jobs.set-build-manifest.outputs.build-site }}
+      build-ingress: 
+        value: ${{ jobs.set-build-manifest.outputs.build-ingress }}
+      deploy-site-resources: 
+        value: ${{ jobs.set-build-manifest.outputs.deploy-site-resources }}
+      deploy-k8s-resources: 
+        value: ${{ jobs.set-build-manifest.outputs.deploy-k8s-resources }}
+
+jobs:
+  set-build-manifest:
+    runs-on: ubuntu-latest
+    outputs:
+      build-site: ${{ steps.changes.outputs.site }}
+      build-ingress: ${{ steps.changes.outputs.ingress }}
+      deploy-site-resources: ${{ steps.changes.outputs.site-resources }}
+      deploy-k8s-resources: ${{ steps.changes.outputs.k8s-resources }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get updated files
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          base: ${{ github.event_name == 'pull_request' && 'main' || '' }}
+          filters: |
+            site:
+              - ['scr/**', 'content/**', 'docker/site/**', '*.js', 'package.json']
+            ingress:
+              - 'docker/ingress-server/**'
+            site-resources:
+              - 'terraform/modules/site-resources/**'
+            k8s-resources:
+              - 'terraform/modules/k8s-resources/**'

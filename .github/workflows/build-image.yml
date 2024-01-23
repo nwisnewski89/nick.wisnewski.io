@@ -19,6 +19,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Build image
+        run: |
+          docker build -t ${{ secrets.ARTIFACT_REGISTRY }}/${{ inputs.image-name }}:${{ inputs.tag }} -f ${{ inputs.dockerfile }} .
+          docker image tag ${{ secrets.ARTIFACT_REGISTRY }}/${{ inputs.image-name }}:${{ inputs.tag }} \
+            ${{ secrets.ARTIFACT_REGISTRY }}/${{ inputs.image-name }}:latest
+
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v1
         with:
@@ -27,12 +33,6 @@ jobs:
       - name: GCP Docker regstiry auth
         run: |
           gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev --quiet
-      
-      - name: Build image
-        run: |
-          docker build -t ${{ secrets.ARTIFACT_REGISTRY }}/${{ inputs.image-name }}:${{ inputs.tag }} -f ${{ inputs.dockerfile }} .
-          docker image tag ${{ secrets.ARTIFACT_REGISTRY }}/${{ inputs.image-name }}:${{ inputs.tag }} \
-            ${{ secrets.ARTIFACT_REGISTRY }}/${{ inputs.image-name }}:latest
       
       - name: Push image
         run: |

@@ -61,4 +61,5 @@ resource "kubernetes_deployment" "ingress_server" {
         }
       }
     }
+  }
 }

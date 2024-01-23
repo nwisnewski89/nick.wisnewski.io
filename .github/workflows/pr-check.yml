@@ -1,0 +1,94 @@
+name: PR Check workflow
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+jobs:
+  set-build-manifest:
+    uses: ./.github/workflows/build-manifest.yml
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: set-build-manifest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build site
+        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}      
+        run: | 
+          docker build -t nick-wisnewski-io:${{ github.sha }} -f docker/site/Dockerfile .
+
+      - name: Run Docker scan on site
+        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
+        uses: anchore/scan-action@v3
+        with:
+          image: "nick-wisnewski-io:${{ github.sha }}"
+          fail-build: false
+          severity-cutoff: critical
+
+      - name: Build ingress server
+        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}      
+        run: |
+          docker build -t ingress-server:${{ github.sha }} -f docker/ingress-server/Dockerfile .
+
+      - name: Run Docker scan on ingress server
+        if: ${{ needs.set-build-manifest.outputs.build-ingress == 'true' }}
+        uses: anchore/scan-action@v3
+        with:
+          image: "ingress-server:${{ github.sha }}"
+          fail-build: false
+          severity-cutoff: critical
+
+      - name: Run scan on GCP deployment
+        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' }}
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          soft_fail: true
+          github_token: ${{ secrets.PAT_TOKEN }}
+          working_directory: terraform/modules/site-resources
+
+      - name: Run scan on K8s deployment
+        if: ${{ needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }}
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          soft_fail: true
+          github_token: ${{ secrets.PAT_TOKEN }}
+          working_directory: terraform/modules/k8s-resources
+
+  terraform-plan:
+    runs-on: ubuntu-latest
+    needs: set-build-manifest
+    if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' ||  needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+    steps:
+      - uses: actions/checkout@v4
+    
+      - name: GCP site resources plan
+        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' }}
+        uses: dflook/terraform-plan@v1
+        with:
+          path: terraform/modules/site-resources
+          label: GCP site resources plan
+          variables: |
+              project_id      = "${{ secrets.PROJECT_ID }}"
+              region          = "${{ secrets.REGION }}"
+              zone            = "${{ secrets.ZONE }}"
+              subnetwork_cidr = "${{ secrets.SUBNET_CIDR }}"
+              pods_cidr       = "${{ secrets.PODS_CIDR }}"
+              services_cidr   = "${{ secrets.SERVICES_CIDR }}"
+
+      - name: K8s resources plan
+        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' }}
+        uses: dflook/terraform-plan@v1
+        with:
+          path: terraform/modules/k8s-resources
+          label: K8s resources plan
+          variables: |
+              project_id      = "${{ secrets.PROJECT_ID }}"
+              region          = "${{ secrets.REGION }}"

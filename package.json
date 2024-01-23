@@ -31,6 +31,7 @@
     "styled-components": "^6.1.8"
   },
   "devDependencies": {
+    "pre-commit": "^1.2.2",
     "prettier": "^2.8.8"
   },
   "homepage": "https://github.com/gatsbyjs/gatsby-starter-blog#readme",
@@ -46,10 +47,12 @@
     "build": "gatsby build",
     "develop": "gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "precommit": "echo 'Pre-commit checks...' && ./scripts/pre-commit.sh&& exit 0",
     "start": "gatsby develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
     "docker": "docker-compose up --build -d"
-  }
+  },
+  "pre-commit": [ "precommit"]
 }

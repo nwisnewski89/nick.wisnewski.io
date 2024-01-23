@@ -19,7 +19,9 @@ const ResumeTemplate = ({
       >
         <header>
           <h1 itemProp="headline">{post.frontmatter.title}</h1>
-          <p>From {post.frontmatter.start} - To {post.frontmatter.end}</p>
+          <p>
+            From {post.frontmatter.start} - To {post.frontmatter.end}
+          </p>
         </header>
         <section
           dangerouslySetInnerHTML={{ __html: post.html }}

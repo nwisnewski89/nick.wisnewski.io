@@ -1,6 +1,6 @@
 provider "google" {
-  region      = var.region
-  project     = var.project_id
+  region  = var.region
+  project = var.project_id
 }
 
 provider "kubernetes" {

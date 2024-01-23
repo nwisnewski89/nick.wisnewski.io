@@ -7,28 +7,7 @@ on:
 
 jobs:
   set-build-manifest:
-    runs-on: ubuntu-latest
-    outputs:
-      build-site: ${{ steps.changes.outputs.site }}
-      build-ingress: ${{ steps.changes.outputs.ingress }}
-      deploy-site-resources: ${{ steps.changes.outputs.site-resources }}
-      deploy-k8s-resources: ${{ steps.changes.outputs.k8s-resources }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Get updated files
-        uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            site:
-              - ['scr/**', 'content/**', 'docker/site/**']
-            ingress:
-              - 'docker/ingress-server/**'
-            site-resources:
-              - 'terraform/modules/site-resources/**'
-            k8s-resources:
-              - 'terraform/modules/k8s-resources/**'
+    uses: ./.github/workflows/build-manifest.yml
     
   build-site:
     needs: set-build-manifest
@@ -67,7 +46,7 @@ jobs:
           path: terraform/modules/site-resources/.terraform-version
 
       - name: Install terraform 
-        uses: hasicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: ${{ steps.tfenv.outputs.content }}
       
@@ -75,7 +54,11 @@ jobs:
         if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' || needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }} 
         run: |
           terraform init
-          terraform apply --auto-approve
+          if [[ "${APPLY}" == "true"]]; then
+            terraform apply --auto-approve
+          else
+            terraform refresh
+          fi
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
           TF_VAR_project_id: ${{ secrets.PROJECT_ID }}
@@ -84,6 +67,7 @@ jobs:
           TF_VAR_subnetwork_cidr: ${{ secrets.SUBNET_CIDR }}
           TF_VAR_services_cidr : ${{ secrets.SERVICES_CIDR }}
           TF_VAR_pods_cidr: ${{ secrets.PODS_CIDR }}
+          APPLY: ${{ needs.set-build-manifest.outputs.deploy-site-resources }}
         working-directory: terraform/modules/site-resources
 
       - name: Deploy k8s resources
@@ -116,15 +100,17 @@ jobs:
             --region ${{ secrets.REGION }} \
             --project ${{ secrets.PROJECT_ID }}
 
-      - name: Restart site deplyoment
+      - name: Restart site deployment
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
         run: |
-          kubectl rollout restart deployment site -n wisnewski-io
+          kubectl scale deployment site --replicas=0 -n wisnewski-io
+          kubectl scale deployment site --replicas=1 -n wisnewski-io
 
-      - name: Restart ingress-server deplyoment
+      - name: Restart ingress-server deployment
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
         run: |
-          kubectl rollout restart deployment ingress-server -n wisnewski-io
+          kubectl scale deployment ingress-server --replicas=0 -n wisnewski-io
+          kubectl scale deployment ingress-server --replicas=1 -n wisnewski-io
 
 
   

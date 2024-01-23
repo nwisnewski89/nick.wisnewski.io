@@ -23,14 +23,14 @@ variable "name" {
 
 variable "site_image" {
   description = "The name of the site image"
-  type = string
-  default = "nick-wisnewski-io"
+  type        = string
+  default     = "nick-wisnewski-io"
 }
 
 variable "ingress_server_image" {
   description = "The name of the ingress server image"
-  type = string
-  default = "ingress-server"
+  type        = string
+  default     = "ingress-server"
 }
 
 data "terraform_remote_state" "site_resources" {
