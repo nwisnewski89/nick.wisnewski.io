@@ -52,7 +52,6 @@ jobs:
           working_directory: terraform/modules/site-resources
 
       - name: Run scan on K8s deployment
-        uses: snyk/actions/iac@master
         if: ${{ needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }}
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
