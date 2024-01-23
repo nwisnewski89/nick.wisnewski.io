@@ -20,7 +20,7 @@ jobs:
       - name: Build site
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}      
         run: | 
-          docker -t nick-wisnewski-io:${{ github.sha }} -f docker/site/Dockerfile .
+          docker build -t nick-wisnewski-io:${{ github.sha }} -f docker/site/Dockerfile .
 
       - name: Run Docker scan on site
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
@@ -35,7 +35,7 @@ jobs:
       - name: Build ingress server
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}      
         run: |
-          docker -t ingress-server:${{ github.sha }} -f docker/ingress-server/Dockerfile .
+          docker build -t ingress-server:${{ github.sha }} -f docker/ingress-server/Dockerfile .
 
       - name: Run Docker scan on ingress server
         if: ${{ needs.set-build-manifest.outputs.build-ingress == 'true' }}
@@ -93,13 +93,13 @@ jobs:
           path: terraform/modules/site-resources
           label: GCP site resources plan
           variables: |
-              project_id      = ${{ secrets.PROJECT_ID }}
-              region          = ${{ secrets.REGION }}
-              zone            = ${{ secrets.ZONE }}
-              subnetwork_cidr = ${{ secrets.SUBNET_CIDR }}
-              pods_cidr       = ${{ secrets.PODS_CIDR }}
-              services_cidr   = ${{ secrets.SERVICES_CIDR }}
-            
+              project_id      = "${{ secrets.PROJECT_ID }}"
+              region          = "${{ secrets.REGION }}"
+              zone            = "${{ secrets.ZONE }}"
+              subnetwork_cidr = "${{ secrets.SUBNET_CIDR }}"
+              pods_cidr       = "${{ secrets.PODS_CIDR }}"
+              services_cidr   = "${{ secrets.SERVICES_CIDR }}""
+            "
 
       - name: K8s resources plan
         if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' }}
@@ -108,5 +108,5 @@ jobs:
           path: terraform/modules/site-resources
           label: K8s resources plan
           variables: |
-              project_id      = ${{ secrets.PROJECT_ID }}
-              region          = ${{ secrets.REGION }}
+              project_id      = "${{ secrets.PROJECT_ID }}"
+              region          = "${{ secrets.REGION }}"
