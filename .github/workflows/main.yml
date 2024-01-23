@@ -54,11 +54,7 @@ jobs:
         if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' || needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }} 
         run: |
           terraform init
-          if [[ "${APPLY}" == "true"]]; then
-            terraform apply --auto-approve
-          else
-            terraform refresh
-          fi
+          terraform apply --auto-approve
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
           TF_VAR_project_id: ${{ secrets.PROJECT_ID }}
