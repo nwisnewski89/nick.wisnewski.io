@@ -15,7 +15,7 @@ locals {
   ssh_tag = "${var.name}-ssh-${var.environment}"
 }
 
-module "k8s-network" {
+module "k8s_network" {
   source       = "terraform-google-modules/network/google"
   version      = "9.0.0"
   project_id   = var.project_id
@@ -54,40 +54,29 @@ module "k8s-network" {
           ports    = ["80", "443"]
         }
       ]
-    },
-    {
-      name          = local.ssh_tag
-      source_ranges = ["35.235.240.0/20"]
-      target_tags   = [local.ssh_tag]
-      allow = [
-        {
-          protocol = "tcp"
-          ports    = ["22"]
-        }
-      ]
     }
   ]
 }
 
-resource "google_compute_router" "k8s-router" {
+resource "google_compute_router" "k8s_router" {
   name    = "${var.name}-k8s-nat-router-${var.environment}"
   region  = var.region
   project = var.project_id
-  network = module.k8s-network.network_id
+  network = module.k8s_network.network_id
   bgp {
     asn = 64514
   }
 }
 
-resource "google_compute_router_nat" "k8s-nat" {
+resource "google_compute_router_nat" "k8s_nat" {
   name                               = "${var.name}-k8s-nat-gateway-${var.environment}"
   project                            = var.project_id
-  router                             = google_compute_router.k8s-router.name
+  router                             = google_compute_router.k8s_router.name
   region                             = var.region
   nat_ip_allocate_option             = "AUTO_ONLY"
   source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
   subnetwork {
-    name                    = module.k8s-network.subnets_self_links[0]
+    name                    = module.k8s_network.subnets_self_links[0]
     source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
   }
   log_config {
@@ -101,7 +90,7 @@ resource "google_compute_router_nat" "k8s-nat" {
   udp_idle_timeout_sec             = 30
 }
 
-resource "google_compute_address" "static-ingress" {
+resource "google_compute_address" "static_ingress" {
   name     = "${var.name}-k8s-static-ingress-ip-${var.environment}"
   project  = var.project_id
   region   = var.region

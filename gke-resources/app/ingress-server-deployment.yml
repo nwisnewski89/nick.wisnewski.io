@@ -14,24 +14,19 @@ spec:
     matchLabels:
       name: ingress-server
       part-of: wisnewski-io
-    template:
-      metadata:
-        labels:
-          name: ingress-server
-          part-of: wisnewski-io
+  template:
+    metadata:
+      labels:
+        name: ingress-server
+        part-of: wisnewski-io
     spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       nodeSelector:
         cloud.google.com/gke-nodepool: wisnewski-ingress-pool-prod
-      tolerations:
-        - key: dedicated
-          operator: Equal
-          value: ingress
-          effect: NoSchedule
       containers:
         - name: ingress-server
-          image: us-east4-docker.pkg.dev/ngress-server-410905/wisnewski/ingress-server:v0.0.1
+          image: us-east4-docker.pkg.dev/nick-wisnewski-io-410905/wisnewski/ingress-server:v8
           ports:
             - name: https
               containerPort: 443

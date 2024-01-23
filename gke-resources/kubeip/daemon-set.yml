@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kubeip
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: kubeip
+  template:
+    metadata:
+      labels:
+        app: kubeip
+    spec:
+      serviceAccountName: kubeip-service-account
+      terminationGracePeriodSeconds: 30
+      priorityClassName: system-node-critical
+      nodeSelector:
+        cloud.google.com/gke-nodepool: wisnewski-ingress-pool-prod
+      containers:
+        - name: kubeip
+          image: doitintl/kubeip-agent
+          resources:
+            requests:
+              cpu: 100m
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: FILTER
+              value: "labels.kubeip=k8s-static-ingress-ip"
+            - name: LOG_LEVEL
+              value: debug
+            - name: LOG_JSON
+              value: "true"

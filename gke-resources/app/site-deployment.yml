@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: site
+  labels:
+    app: site
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+  selector:
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,7 +31,7 @@ spec:
         cloud.google.com/gke-nodepool: wisnewski-app-pool-prod
       containers:
         - name: nick-wisnewski-io
-          image: us-east4-docker.pkg.dev/nick-wisnewski-io-410905/wisnewski/nick-wisnewski-io:v0.0.7
+          image: us-east4-docker.pkg.dev/nick-wisnewski-io-410905/wisnewski/nick-wisnewski-io:v7
           ports:
             - name: http
               containerPort: 8080
