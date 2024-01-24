@@ -103,7 +103,7 @@ jobs:
           kubectl scale deployment site --replicas=1 -n wisnewski-io
 
       - name: Restart ingress-server deployment
-        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
+        if: ${{ needs.set-build-manifest.outputs.build-ingress == 'true' }}
         run: |
           kubectl scale deployment ingress-server --replicas=0 -n wisnewski-io
           kubectl scale deployment ingress-server --replicas=1 -n wisnewski-io

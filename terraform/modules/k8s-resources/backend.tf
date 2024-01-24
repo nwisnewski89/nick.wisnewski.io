@@ -4,4 +4,3 @@ terraform {
     prefix = "k8s-resources"
   }
 }
-#test
