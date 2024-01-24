@@ -78,9 +78,8 @@ jobs:
 
       - name: Install kubectl
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}
+        id: kubectl
         uses: azure/setup-kubectl@v3
-        with: 
-          version: latest
 
       - name: Authenticate to GCP
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}
@@ -99,13 +98,18 @@ jobs:
       - name: Restart site deployment
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
         run: |
-          kubectl scale deployment site --replicas=0 -n wisnewski-io kubectl scale deployment site --replicas=1 -n wisnewski-io
+          ${KUBECTL_PATH} scale deployment site --replicas=0 -n wisnewski-io 
+          ${KUBECTL_PATH} scale deployment site --replicas=1 -n wisnewski-io
+        env:
+          KUBECTL_PATH: ${{ steps.kubectl.outputs.kubectl-path }}
 
       - name: Restart ingress-server deployment
         if: ${{ needs.set-build-manifest.outputs.build-ingress == 'true' }}
         run: |
-          kubectl scale deployment ingress-server --replicas=0 -n wisnewski-io
-          kubectl scale deployment ingress-server --replicas=1 -n wisnewski-io
+          ${KUBECTL_PATH} scale deployment ingress-server --replicas=0 -n wisnewski-io
+          ${KUBECTL_PATH} scale deployment ingress-server --replicas=1 -n wisnewski-io
+        env:
+          KUBECTL_PATH: ${{ steps.kubectl.outputs.kubectl-path }}
 
 
   
