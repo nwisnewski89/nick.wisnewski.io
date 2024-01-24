@@ -36,6 +36,9 @@ const Bio = () => {
       <p>
         {author?.summary || null}
         {` `}
+        <br />
+        <br />
+        Located in <b>Philadelphia, PA</b>.
       </p>
     </div>
   )

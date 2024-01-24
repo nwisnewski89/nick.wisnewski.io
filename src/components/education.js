@@ -3,24 +3,29 @@ import { StaticImage } from "gatsby-plugin-image"
 
 const Education = () => {
   return (
-    <div className="education">
+    <>
       <h2>Education</h2>
-      <StaticImage
-        className="drexel-logo"
-        src="../images/drexel-logo.png"
-        alt="drexel university"
-        width={50}
-        hight={50}
-      />
-      <p>
-        <br />
-        <b>Drexel University</b>
-        <br />
-        Bachelor of Science in Mathematics
-        <br />
-        Graduated Summer 2015, GPA 3.29
-      </p>
-    </div>
+      <div className="education">
+        <StaticImage
+          className="education-logo"
+          formats={["auto", "webp", "avif"]}
+          src="../images/drexel-logo.png"
+          alt="Drexel University"
+          layout="fixed"
+          width={100}
+          height={100}
+          quality={95}
+        />
+        <p>
+          <br />
+          <b>Drexel University</b>
+          <br />
+          Bachelor of Science in Mathematics
+          <br />
+          Graduated Summer 2015, GPA 3.29
+        </p>
+      </div>
+    </>
   )
 }
 
