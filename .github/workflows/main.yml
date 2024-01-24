@@ -87,7 +87,7 @@ jobs:
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}
         uses: azure/setup-kubectl@v3
         with: 
-          version: 1.29.0
+          version: latest
 
       - name: Authenticate to GKE
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}
