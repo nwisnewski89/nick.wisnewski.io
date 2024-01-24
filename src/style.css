@@ -307,6 +307,24 @@ a:focus {
   align-items: center;
 }
 
+.education-logo {
+  margin-right: var(--spacing-10);
+  margin-bottom: var(--spacing-0);
+  min-width: 100px;
+}
+
+.education {
+  width: 100%;
+  min-width: 200px;
+  display: flex;
+  text-align: left;
+  margin-bottom: var(--spacing-16);
+}
+
+.education p {
+  margin-bottom: var(--spacing-0);
+}
+
 .linkedin-logo {
   margin-right: var(--spacing-4);
   margin-bottom: var(--spacing-0);
@@ -336,6 +354,11 @@ a:focus {
 
 .gatsby-highlight {
   margin-bottom: var(--spacing-8);
+}
+
+.contact-form {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Media queries */
