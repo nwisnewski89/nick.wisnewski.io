@@ -37,12 +37,14 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Get terraform version
+        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' || needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }} 
         id: tfvenv
         uses: juliangruber/read-file-action@v1
         with:
           path: terraform/modules/site-resources/.terraform-version
 
       - name: Install terraform 
+        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' || needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }} 
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: ${{ steps.tfenv.outputs.content }}
@@ -74,24 +76,25 @@ jobs:
           TF_VAR_region: ${{ secrets.REGION }}
         working-directory: terraform/modules/k8s-resources
 
-      - name: Authenticate to GCP
-        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
-
       - name: Install kubectl
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}
         uses: azure/setup-kubectl@v3
         with: 
           version: latest
 
+      - name: Authenticate to GCP
+        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+          project_id: ${{ secrets.PROJECT_ID }}
+
       - name: Authenticate to GKE
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}
-        run: |
-          gcloud container clusters get-credentials wisnewski-k8s-cluster-prod  \
-            --region ${{ secrets.REGION }} \
-            --project ${{ secrets.PROJECT_ID }}
+        uses: google-github-actions/get-gke-credentials@v1
+        with:
+          cluster_name: wisnewski-k8s-cluster-prod 
+          location: ${{ secrets.REGION }}
 
       - name: Restart site deployment
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
