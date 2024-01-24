@@ -32,7 +32,6 @@ jobs:
   deploy-site:
     needs: [set-build-manifest, build-site, build-ingress]
     runs-on: ubuntu-latest
-    if: ${{ needs.set-build-manifest.outputs.changes != '[]' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -99,8 +98,7 @@ jobs:
       - name: Restart site deployment
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
         run: |
-          kubectl scale deployment site --replicas=0 -n wisnewski-io
-          kubectl scale deployment site --replicas=1 -n wisnewski-io
+          kubectl scale deployment site --replicas=0 -n wisnewski-io kubectl scale deployment site --replicas=1 -n wisnewski-io
 
       - name: Restart ingress-server deployment
         if: ${{ needs.set-build-manifest.outputs.build-ingress == 'true' }}
