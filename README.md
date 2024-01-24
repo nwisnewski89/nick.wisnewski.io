@@ -35,5 +35,5 @@
 ## Disclaimer
 
 And voila there is my crappy resume site [nick.wisnewski.io](https://nick.wisnewski.io)
-I am by no means a Web Developer :sweat_smile:.
+I am by no means a Web Developer :sweat_smile:. This was an exercise to gain experience in GCP and Kubernetes and showcase my skills with GitHub Actions.
 Will Trade CI :rocket: :ship: for CSS :nail_care:.

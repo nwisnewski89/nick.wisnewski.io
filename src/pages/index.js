@@ -6,7 +6,6 @@ import Seo from "../components/seo"
 import Skills from "../components/skills"
 import Education from "../components/education"
 import Social from "../components/social"
-import ContactForm from "../components/contactform"
 
 const ResumePost = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata?.title || `Title`
@@ -66,7 +65,6 @@ const ResumePost = ({ data, location }) => {
           )
         })}
       </ol>
-      {/* <ContactForm /> */}
     </Layout>
   )
 }
