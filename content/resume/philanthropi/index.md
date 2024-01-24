@@ -29,18 +29,18 @@ Was the second DevOps engineer hired at an early stage startup. In my first 6 mo
 
 - Developed the build and publish workflows for the NPM component library using Github Actions and semantic release.
 
-- Developed a solution for storing SSM parameters as IAC using Terraform <a href="https://registry.terraform.io/providers/bouk/ejson/latest" target="_blank">ejson module</a> and <a href="https://github.com/Shopify/ejson" target="_blank">ejson</a> to encrypt sensitive data. Created a docker image to ease the developer workflow for adding SSM parameters, consisted of a custom YAML file that followed the format:
+- Developed a solution for storing SSM parameters as IAC using Terraform <a href="https://registry.terraform.io/providers/bouk/ejson/latest" target="_blank">ejson module</a> and <a href="https://github.com/Shopify/ejson" target="_blank">ejson</a> to encrypt sensitive data. Created a Docker image to ease the developer workflow for adding SSM parameters, consisted of a custom YAML file that followed the format:
 
 ```
 parameters:
     {environment: dev, test, stg, preprd, dr, prod}:
         - parameter: {parameter_name}
           value: {value}
-          type: String | SecureString
+          type: String || SecureString
 
 ```
 
-the docker image mounted in the YAML file. The ejson binary was installed during image build. The entry point was a Python script that parsed the YAML file and wrote the new parameters to the environment-specific Terraform vars file that was in JSON format that was a map of entries where the key was the name of the parameter and the only attribute was the parameter type, and create the entry in the environment-specific ejson file. String type parameters were prefixed with a `_` in the e ejson file and stored as plain text in git, SecureString were added to the ejson file without the prefix. Once all parameters were added the ejson binary was run to encrypt the data. The private keys for the environment-specific ejson files were stored in AWS Secret Manager.
+the Docker image mounted in the YAML file. The ejson binary was installed during image build. The entry point was a Python script that parsed the YAML file and wrote the new parameters to the environment-specific Terraform vars file that was in JSON format that was a map of entries where the key was the name of the parameter and the only attribute was the parameter type, and create the entry in the environment-specific ejson file. String type parameters were prefixed with a `_` in the e ejson file and stored as plain text in git, SecureString were added to the ejson file without the prefix. Once all parameters were added the ejson binary was run to encrypt the data. The private keys for the environment-specific ejson files were stored in AWS Secret Manager.
 
 - Implemented a Playwright test framework to provide comprehensive test coverage in PR and as a gate CI deployments. Leveraged a custom webpack built that injected the <a href="https://github.com/istanbuljs/babel-plugin-istanbul" target="_blank">babel-plugin-istanbul</a> plugin and upload coverage reports to <a href="https://about.codecov.io/" target="_blank">codecov.io</a>.
 

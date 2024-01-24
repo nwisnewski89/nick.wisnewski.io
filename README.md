@@ -29,7 +29,7 @@
 - Utilize a [path filter](https://github.com/dorny/paths-filter) to determine build steps
 - Verify build on change (TODO: Add Playwright tests)
 - Run container scan on changes to src or image.
-- Run `tfsec` scan on Terraform changes. 
+- Run `tfsec` scan on Terraform changes.
 - Post Terraform plan to PR for approval on Terraform changes.
 
 ## Disclaimer

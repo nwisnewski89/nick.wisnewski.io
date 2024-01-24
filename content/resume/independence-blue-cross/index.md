@@ -23,4 +23,4 @@ Assisted in the handoff of the AWS Organization developed by an outside consulti
 
 ## Reason for Leaving
 
-Disagreed with project management style, particularly that infrastructure and development teams were treated as two distinct silos. I felt the organization was not embracing the principles of DevOps. Left to focus on personal development, up-skilling, and finding role that is a better fit.
+The role was not a good fit, I did not want to just focus on provisioning cloud infrastructure. Additionally I felt the organization was not embracing the principles of DevOps, development and infrastructure were treated as two distinct silos. Left to focus on personal development, up-skilling, and finding role that is a better fit.
