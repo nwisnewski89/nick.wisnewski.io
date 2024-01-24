@@ -4,4 +4,3 @@ terraform {
     prefix = "site-resources"
   }
 }
-#deploy

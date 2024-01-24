@@ -1,7 +1,5 @@
 ## Site Build
 
-[![Known Vulnerabilities](https://snyk.io/test/github/nwisnewski89/nick.wisnewski.io/main/badge.svg)]
-
 - Leveraged the Gatsby.js [Starter Blog Template](https://www.gatsbyjs.com/starters/gatsbyjs/gatsby-starter-blog) and [Material UI](https://mui.com/material-ui/getting-started/) to create a simple resume site.
 - Built the static site into a docker image with an Nginx Server.
 - Created a free tier GCP account to host the application in GKE.
@@ -28,9 +26,11 @@
 
 ### PR
 
-- Verify build (TODO: Add Playwright tests)
-- Utilize [Synk](https://snyk.io/) security scans for Docker, Node, and Terraform
-- Post Terraform plan to PR for approval
+- Utilize a [path filter](https://github.com/dorny/paths-filter) to determine build steps
+- Verify build on change (TODO: Add Playwright tests)
+- Run container scan on changes to src or image.
+- Run `tfsec` scan on Terraform changes.
+- Post Terraform plan to PR for approval on Terraform changes.
 
 ## Disclaimer
 

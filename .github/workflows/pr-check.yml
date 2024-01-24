@@ -84,7 +84,7 @@ jobs:
               services_cidr   = "${{ secrets.SERVICES_CIDR }}"
 
       - name: K8s resources plan
-        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' }}
+        if: ${{ needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }}
         uses: dflook/terraform-plan@v1
         with:
           path: terraform/modules/k8s-resources

@@ -17,7 +17,7 @@ Was on the front-end team responsible for modernizing the Cloud Manager UI to a 
 
 - Maintained and contributed to CircleCI PR gates.
 
-- Developed a POC image diff framework that leveraged Webdriver.io to capture screenshots of the Cloud Manager UI components and compare against baseline images using <a href="https://www.npmjs.com/package/resemblejs" target="_blank">resemble.js</a> for image comparison. The back-end application was mocked with static responses served by <a href="http://www.mbtest.org/docs/api/mocks" target="_blank">mountebank</a>. I created a docker build for mocked front-end with Mountebank, and a docker-compose file to run in detached mode so the Webdriver.io against the local build in CI. The results were published to an allure report.
+- Developed a POC image diff framework that leveraged Webdriver.io to capture screenshots of the Cloud Manager UI components and compare against baseline images using <a href="https://www.npmjs.com/package/resemblejs" target="_blank">resemble.js</a> for image comparison. The back-end application was mocked with static responses served by <a href="http://www.mbtest.org/docs/api/mocks" target="_blank">mountebank</a>. I created a Docker build for mocked front-end with Mountebank, and a Docker-Compose file to run in detached mode so the Webdriver.io against the local build in CI. The results were published to an allure report.
 
 - Developed a Python script to generate release notes based on conventional commit messages.
 
