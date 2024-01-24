@@ -32,10 +32,7 @@ jobs:
   deploy-site:
     needs: [set-build-manifest, build-site, build-ingress]
     runs-on: ubuntu-latest
-    if: ${{ needs.set-build-manifest.outputs.build-site == 'true' ||
-            needs.set-build-manifest.outputs.build-ingress == 'true' ||
-            needs.set-build-manifest.outputs.deploy-site-resources == 'true' ||
-            needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }}
+    if: ${{ needs.set-build-manifest.outputs.changes != '[]' }}
     steps:
       - uses: actions/checkout@v4
 
