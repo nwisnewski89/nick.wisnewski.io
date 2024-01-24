@@ -34,7 +34,7 @@ jobs:
           base: ${{ github.event_name == 'pull_request' && 'main' || '' }}
           filters: |
             site:
-              - ['scr/**', 'content/**', 'docker/site/**', '*.js', 'package.json']
+              - ['src/**', 'content/**', 'docker/site/**', '*.js', 'package.json']
             ingress:
               - 'docker/ingress-server/**'
             site-resources:
