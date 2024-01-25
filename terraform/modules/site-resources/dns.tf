@@ -32,7 +32,7 @@ resource "google_dns_record_set" "txt_record" {
   managed_zone = google_dns_managed_zone.dns_zone.name
 
   rrdatas = [
-    "MS=ms86065626", 
+    "MS=ms86065626",
     "\"v=spf1 include:secureserver.net -all\"",
   ]
 }

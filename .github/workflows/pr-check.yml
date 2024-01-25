@@ -28,7 +28,8 @@ jobs:
 
       - name: Run Docker scan on site
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
-        uses: anchore/scan-action@v3 with:
+        uses: anchore/scan-action@v3 
+        with:
           image: "nick-wisnewski-io:${{ github.sha }}"
           fail-build: false
           severity-cutoff: critical
@@ -68,6 +69,7 @@ jobs:
     if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' ||  needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }}
     env:
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      GITHUB_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
     
