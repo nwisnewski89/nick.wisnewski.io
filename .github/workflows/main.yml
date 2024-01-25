@@ -15,6 +15,7 @@ jobs:
     steps:
       - uses: jimbloemkolk/auto-rebase@v0.1.0
         with:
+          filter: always
           github_token: ${{ github.token }}
 
   set-build-manifest:
@@ -54,6 +55,7 @@ jobs:
         if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' }}
         uses: dflook/terraform-apply@v1
         with:
+          auto_approve: true
           path: terraform/modules/site-resources
           variables: |
               project_id      = "${{ secrets.PROJECT_ID }}"
@@ -67,6 +69,7 @@ jobs:
         if: ${{ needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }}
         uses: dflook/terraform-apply@v1
         with:
+          auto_approve: true
           path: terraform/modules/k8s-resources
           variables: |
               project_id      = "${{ secrets.PROJECT_ID }}"
