@@ -1,7 +1,6 @@
 output "k8s_config" {
   value = {
     host                   = "https://${google_container_cluster.k8s.endpoint}"
-    token                  = data.google_client_config.provider.access_token
     cluster_ca_certificate = base64decode(google_container_cluster.k8s.master_auth[0].cluster_ca_certificate)
   }
   sensitive   = true

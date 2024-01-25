@@ -7,6 +7,10 @@ on:
       - edited
       - synchronize
 
+permissions:
+  pull-requests: write
+  checks: write
+
 jobs:
   set-build-manifest:
     uses: ./.github/workflows/build-manifest.yml
@@ -24,8 +28,7 @@ jobs:
 
       - name: Run Docker scan on site
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
-        uses: anchore/scan-action@v3
-        with:
+        uses: anchore/scan-action@v3 with:
           image: "nick-wisnewski-io:${{ github.sha }}"
           fail-build: false
           severity-cutoff: critical
@@ -64,7 +67,6 @@ jobs:
     needs: set-build-manifest
     if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' ||  needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }}
     env:
-      GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
     steps:
       - uses: actions/checkout@v4

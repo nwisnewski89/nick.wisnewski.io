@@ -5,7 +5,18 @@ on:
     branches:
       - main
 
+permissions:
+  pull-requests: write
+  contents: write
+
 jobs:
+  rebase:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: jimbloemkolk/auto-rebase@v0.1.0
+        with:
+          github_token: ${{ github.token }}
+
   set-build-manifest:
     uses: ./.github/workflows/build-manifest.yml
     
@@ -33,48 +44,32 @@ jobs:
     needs: [set-build-manifest, build-site, build-ingress]
     if: ${{ always() }}
     runs-on: ubuntu-latest
+    env:
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get terraform version
-        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' || needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }} 
-        id: tfvenv
-        uses: juliangruber/read-file-action@v1
+      - name: GCP site resources apply plan
+        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' }}
+        uses: dflook/terraform-apply@v1
         with:
-          path: terraform/modules/site-resources/.terraform-version
+          path: terraform/modules/site-resources
+          variables: |
+              project_id      = "${{ secrets.PROJECT_ID }}"
+              region          = "${{ secrets.REGION }}"
+              zone            = "${{ secrets.ZONE }}"
+              subnetwork_cidr = "${{ secrets.SUBNET_CIDR }}"
+              pods_cidr       = "${{ secrets.PODS_CIDR }}"
+              services_cidr   = "${{ secrets.SERVICES_CIDR }}"
 
-      - name: Install terraform 
-        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' || needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }} 
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: ${{ steps.tfenv.outputs.content }}
-      
-      - name: Deploy site resources
-        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' || needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }} 
-        run: |
-          terraform init
-          terraform apply --auto-approve
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          TF_VAR_project_id: ${{ secrets.PROJECT_ID }}
-          TF_VAR_region: ${{ secrets.REGION }}
-          TF_VAR_zone : ${{ secrets.ZONE }}
-          TF_VAR_subnetwork_cidr: ${{ secrets.SUBNET_CIDR }}
-          TF_VAR_services_cidr : ${{ secrets.SERVICES_CIDR }}
-          TF_VAR_pods_cidr: ${{ secrets.PODS_CIDR }}
-          APPLY: ${{ needs.set-build-manifest.outputs.deploy-site-resources }}
-        working-directory: terraform/modules/site-resources
-
-      - name: Deploy k8s resources
+      - name: K8s resources apply plan
         if: ${{ needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }}
-        run: |
-          terraform init
-          terraform apply --auto-approve
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          TF_VAR_project_id: ${{ secrets.PROJECT_ID }}
-          TF_VAR_region: ${{ secrets.REGION }}
-        working-directory: terraform/modules/k8s-resources
+        uses: dflook/terraform-apply@v1
+        with:
+          path: terraform/modules/k8s-resources
+          variables: |
+              project_id      = "${{ secrets.PROJECT_ID }}"
+              region          = "${{ secrets.REGION }}"
 
       - name: Install kubectl
         if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}

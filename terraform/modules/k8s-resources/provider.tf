@@ -5,6 +5,6 @@ provider "google" {
 
 provider "kubernetes" {
   host                   = data.terraform_remote_state.site_resources.outputs.k8s_config.host
-  token                  = data.terraform_remote_state.site_resources.outputs.k8s_config.token
+  token                  = data.google_client_config.provider.access_token
   cluster_ca_certificate = data.terraform_remote_state.site_resources.outputs.k8s_config.cluster_ca_certificate
 }

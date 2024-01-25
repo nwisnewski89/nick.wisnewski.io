@@ -44,3 +44,5 @@ data "terraform_remote_state" "site_resources" {
 locals {
   namespace = "${var.name}-io"
 }
+
+data "google_client_config" "provider" {}
