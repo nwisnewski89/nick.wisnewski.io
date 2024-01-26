@@ -74,3 +74,5 @@ terraform.tfvars
 credentials.json
 kubeconfig-*
 
+#vs code
+.vscode

@@ -1,16 +1,16 @@
 {
-  "name": "gatsby-starter-blog",
+  "name": "nick-wisnewski-io",
   "private": true,
-  "description": "A starter for a blog powered by Gatsby and Markdown",
+  "description": "Shameless self promotion to learn GKE",
   "version": "0.1.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "author": "Nick Wisnewski",
   "bugs": {
-    "url": "https://github.com/gatsbyjs/gatsby/issues"
+    "url": "https://github.com/nwisnewski89/nick.wisnewski.io/issues"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
-    "@fontsource-variable/montserrat": "^5.0.4",
+    "@fontsource-variable/montserrat": "^5.0.17",
     "@fontsource/merriweather": "^5.0.8",
     "@mui/icons-material": "^5.15.6",
     "@mui/material": "^5.15.3",
