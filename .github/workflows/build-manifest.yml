@@ -44,7 +44,7 @@ jobs:
         uses: actions/github-script@v7
         id: images
         with:
-          results-encoding: string
+          result-encoding: string
           script: |
             const changes = Array.from(${{ steps.changes.outputs.changes }})
             console.log(`Filtered changes: ${changes}`)
