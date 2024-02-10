@@ -13,6 +13,8 @@ on:
         value: ${{ jobs.set-build-manifest.outputs.deploy-k8s-resources }}
       changes: 
         value: ${{ jobs.set-build-manifest.outputs.changes }}
+      images: 
+        value: ${{ jobs.set-build-manifest.outputs.images }}
 
 jobs:
   set-build-manifest:
@@ -23,6 +25,7 @@ jobs:
       deploy-site-resources: ${{ steps.changes.outputs.site-resources }}
       deploy-k8s-resources: ${{ steps.changes.outputs.k8s-resources }}
       changes: ${{ steps.changes.outputs.changes }}
+      images: ${{ steps.images.outputs.result }}
     steps:
       - uses: actions/checkout@v4
 
