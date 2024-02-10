@@ -13,29 +13,46 @@ on:
         value: ${{ jobs.set-build-manifest.outputs.deploy-k8s-resources }}
       changes: 
         value: ${{ jobs.set-build-manifest.outputs.changes }}
+      images: 
+        value: ${{ jobs.set-build-manifest.outputs.images }}
 
 jobs:
   set-build-manifest:
     runs-on: ubuntu-latest
     outputs:
       build-site: ${{ steps.changes.outputs.site }}
-      build-ingress: ${{ steps.changes.outputs.ingress }}
+      build-ingress: ${{ steps.changes.outputs.ingress-server }}
       deploy-site-resources: ${{ steps.changes.outputs.site-resources }}
       deploy-k8s-resources: ${{ steps.changes.outputs.k8s-resources }}
       changes: ${{ steps.changes.outputs.changes }}
+      images: ${{ steps.images.outputs.result }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Get updated files
-        uses: dorny/paths-filter@v2
+        uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
             site:
               - ['src/**', 'content/**', 'docker/site/**', '*.js', 'package.json']
-            ingress:
+            ingress-server:
               - 'docker/ingress-server/**'
-            site-resources:
+            deploy-site-resources:
               - 'terraform/modules/site-resources/**'
-            k8s-resources:
+            deploy-k8s-resources:
               - 'terraform/modules/k8s-resources/**'
+      
+      - name: Set images for docker build
+        uses: actions/github-script@v7
+        id: images
+        with:
+          script: |
+            const changes = Array.from(${{ steps.changes.outputs.changes }})
+            console.log(`Filtered changes: ${changes}`)
+            const images = changes.filter(change => !change.includes('deploy'))
+            console.log(`Docker images: ${images}`)
+            return images || 'false'
+
+      - run: echo '${{ steps.images.outputs.result  }}'
+            

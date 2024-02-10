@@ -3,39 +3,70 @@ name: Build docker image and push to GCP Artifact Registry
 on: 
   workflow_call:
     inputs:
-      image-name:
-        required: true
+      images:
+        required: false
         type: string
-      tag:
-        required: true
-        type: string
-      dockerfile:
-        required: true
-        type: string
-
+        default: '[""]'
+        
 jobs:
   build-image:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        image: ${{ fromJson(inputs.images) }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build image
-        run: |
-          docker build -t ${{ secrets.ARTIFACT_REGISTRY }}/${{ inputs.image-name }}:${{ inputs.tag }} -f ${{ inputs.dockerfile }} .
-          docker image tag ${{ secrets.ARTIFACT_REGISTRY }}/${{ inputs.image-name }}:${{ inputs.tag }} \
-            ${{ secrets.ARTIFACT_REGISTRY }}/${{ inputs.image-name }}:latest
-
-      - name: Authenticate to GCP
-        uses: google-github-actions/auth@v1
+      - name: Setup buildx
+        uses: docker/setup-buildx-action@v3
         with:
-          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+          driver-opts: network=host
 
-      - name: GCP Docker regstiry auth
-        run: |
-          gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev --quiet
-      
-      - name: Push image
-        run: |
-          docker push ${{ secrets.ARTIFACT_REGISTRY }}/${{ inputs.image-name }}:${{ inputs.tag }}
-          docker push ${{ secrets.ARTIFACT_REGISTRY }}/${{ inputs.image-name }}:latest
+      - name: Set docker tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ github.ref_name == 'main' && secrets.ARTIFACT_REGISTRY || '' }}${{ matrix.image }}
+          tags:
+            type=raw,v${{ github.run_number }}
+            type=raw,value=latest
+          labels:
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+
+      - name: Login to GAR
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.REGION }}-docker.pkg.dev
+          username: _json_key
+          password: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/${{ matrix.image }}/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          load: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Scan image with trivy
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ matrix.image }}:latest
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          timeout: 20m0s
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
 

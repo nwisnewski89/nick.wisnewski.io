@@ -21,29 +21,16 @@ jobs:
   set-build-manifest:
     uses: ./.github/workflows/build-manifest.yml
     
-  build-site:
+  build-docker:
     needs: set-build-manifest
-    if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
     uses: ./.github/workflows/build-image.yml
+    if: ${{ needs.set-build-manifest.outputs.images != 'false' }}
     with:
-      image-name: nick-wisnewski-io
-      dockerfile: docker/site/Dockerfile
-      tag: "v${{ github.run_number }}"
-    secrets: inherit
-
-  build-ingress:
-    needs: set-build-manifest
-    if: ${{ needs.set-build-manifest.outputs.build-ingress == 'true' }}
-    uses: ./.github/workflows/build-image.yml
-    with:
-      image-name: ingress-server
-      dockerfile: docker/ingress-server/Dockerfile
-      tag: "v${{ github.run_number }}"
-    secrets: inherit
+      images: ${{ needs.set-build-manifest.outputs.images }}
 
   deploy-site:
-    needs: [set-build-manifest, build-site, build-ingress]
-    if: ${{ always() }}
+    needs: [set-build-manifest, build-docker]
+    if: ${{ always() && needs.set-build-manifest.outputs.changes != '[]' }}
     runs-on: ubuntu-latest
     env:
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
@@ -76,19 +63,19 @@ jobs:
               region          = "${{ secrets.REGION }}"
 
       - name: Install kubectl
-        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}
+        if: ${{ needs.set-build-manifest.outputs.images != 'false' }}
         id: kubectl
         uses: azure/setup-kubectl@v3
 
       - name: Authenticate to GCP
-        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}
+        if: ${{ needs.set-build-manifest.outputs.images != 'false' }}
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
           project_id: ${{ secrets.PROJECT_ID }}
 
       - name: Authenticate to GKE
-        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' || needs.set-build-manifest.outputs.build-ingress == 'true' }}
+        if: ${{ needs.set-build-manifest.outputs.images != 'false' }}
         uses: google-github-actions/get-gke-credentials@v1
         with:
           cluster_name: wisnewski-k8s-cluster-prod 

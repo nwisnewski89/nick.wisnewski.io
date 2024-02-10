@@ -1,16 +1,20 @@
-FROM node:21-bullseye AS build
+FROM node:21-bullseye AS base
+ 
+RUN npm install -g npm@10.2.5
+
+FROM base AS build
 
 WORKDIR /app
 
+COPY package.json .
+
+COPY package-lock.json .
+
+RUN npm ci
+
 COPY . .
 
-RUN npm install -g npm@10.2.5
-
-RUN npm install
-
 RUN npm run build
-
-RUN rm -rf node_modules
 
 FROM nginx:1.24.0-alpine-slim AS server
 
