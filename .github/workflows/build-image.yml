@@ -11,11 +11,6 @@ on:
 jobs:
   build-image:
     runs-on: ubuntu-latest
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5000:5000
     strategy:
       fail-fast: true
       matrix:
@@ -33,7 +28,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ github.ref_name == 'main' && secrets.ARTIFACT_REGISTRY || 'localhost:5000/test' }}${{ matrix.image }}
+            ${{ github.ref_name == 'main' && secrets.ARTIFACT_REGISTRY || '' }}${{ matrix.image }}
           tags:
             type=raw,v${{ github.run_number }}
             type=raw,value=latest,enabled=${{ github.ref_name == 'main' }}
@@ -54,6 +49,7 @@ jobs:
           context: .
           file: docker/${{ matrix.image }}/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
+          load: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -61,10 +57,16 @@ jobs:
 
       - name: Scan image with trivy
         if: ${{ github.event_name == 'pull_request' }}
-        uses: docker/scout-action@v1
+        uses: aquasecurity/trivy-action@master
         with:
-          command: cves
-          image: ${{ steps.meta.outputs.tags }}
-          write-comment: true
-          github-token: ${{ secrets.GITHUB_TOKEN }} 
+          image-ref: ${{ matrix.image }}:v${{ github.run_number }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          timeout: 20m0s
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
 
