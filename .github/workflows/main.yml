@@ -8,7 +8,6 @@ on:
 permissions:
   pull-requests: write
   contents: write
-  security-events: write
 
 jobs:
   rebase:
@@ -28,6 +27,7 @@ jobs:
     if: ${{ needs.set-build-manifest.outputs.images != 'false' }}
     with:
       images: ${{ needs.set-build-manifest.outputs.images }}
+    secrets: inherit
 
   deploy-site:
     needs: [set-build-manifest, build-docker]
