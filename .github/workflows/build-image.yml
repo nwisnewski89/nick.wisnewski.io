@@ -62,7 +62,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: image
-          input: ${{ matrix.image }}:latest
+          image-ref: ${{ matrix.image }}:latest
           format: table
           exit-code: 1
           vuln-type: 'os,library'
