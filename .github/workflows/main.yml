@@ -31,9 +31,7 @@ jobs:
 
   deploy-site:
     needs: [set-build-manifest, build-docker]
-    if: ${{ always() && 
-            needs.set-build-manifest.outputs.changes != '[]' && 
-            (needs.build-docker.result != 'failure' }}
+    if: ${{ always() && needs.set-build-manifest.outputs.changes != '[]' && needs.build-docker.result != 'failure' }}
     runs-on: ubuntu-latest
     env:
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
