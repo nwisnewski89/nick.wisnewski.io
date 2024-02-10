@@ -31,7 +31,7 @@ jobs:
             ${{ github.ref_name == 'main' && secrets.ARTIFACT_REGISTRY || '' }}${{ matrix.image }}
           tags:
             type=raw,v${{ github.run_number }}
-            type=raw,value=latest,enabled=${{ github.ref_name == 'main' }}
+            type=raw,value=latest
           labels:
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
 
@@ -59,7 +59,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ matrix.image }}:v${{ github.run_number }}
+          image-ref: ${{ matrix.image }}:latest
           format: 'sarif'
           output: 'trivy-results.sarif'
           timeout: 20m0s
