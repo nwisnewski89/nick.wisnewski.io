@@ -31,7 +31,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ github.ref_name == 'main' && secrets.ARTIFACT_REGISTRY || 'localhost:5000/test' }}/${{ matrix.image }}
+            ${{ github.ref_name == 'main' && secrets.ARTIFACT_REGISTRY || '' }}${{ matrix.image }}
           tags:
             type=raw,v${{ github.run_number }}
             type=raw,value=latest
@@ -51,7 +51,7 @@ jobs:
         with:
           context: .
           file: docker/${{ matrix.image }}/Dockerfile
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
