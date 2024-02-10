@@ -34,7 +34,7 @@ jobs:
             ${{ github.ref_name == 'main' && secrets.ARTIFACT_REGISTRY || 'localhost:5000/test' }}/${{ matrix.image }}
           tags:
             type=raw,v${{ github.run_number }}
-            type=raw,value=latest,enable=${{ github.ref_name == 'main' }}
+            type=raw,value=latest
           labels:
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
 
@@ -51,7 +51,7 @@ jobs:
         with:
           context: .
           file: docker/${{ matrix.image }}/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -62,7 +62,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: image
-          input: ${{ steps.meta.outputs.images[0] }}
+          input: ${{ steps.meta.outputs.tags[0] }}
           format: table
           exit-code: 1
           vuln-type: 'os,library'
