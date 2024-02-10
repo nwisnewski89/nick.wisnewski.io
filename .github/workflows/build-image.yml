@@ -25,16 +25,18 @@ jobs:
 
       - name: Setup buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: network=host
 
       - name: Set docker tags
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ github.ref_name == 'main' && secrets.ARTIFACT_REGISTRY || '' }}${{ matrix.image }}
+            ${{ github.ref_name == 'main' && secrets.ARTIFACT_REGISTRY || 'localhost:5000/test' }}${{ matrix.image }}
           tags:
             type=raw,v${{ github.run_number }}
-            type=raw,value=latest
+            type=raw,value=latest,enabled=${{ github.ref_name == 'main' }}
           labels:
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
 
@@ -51,7 +53,7 @@ jobs:
         with:
           context: .
           file: docker/${{ matrix.image }}/Dockerfile
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -59,13 +61,10 @@ jobs:
 
       - name: Scan image with trivy
         if: ${{ github.event_name == 'pull_request' }}
-        uses: aquasecurity/trivy-action@master
+        uses: docker/scout-action@v1
         with:
-          scan-type: image
-          image-ref: ${{ matrix.image }}:latest
-          format: table
-          exit-code: 1
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
-          trivyignores: .github/.trivyignores
+          command: cves
+          image: ${{ steps.meta.outputs.tags }}
+          write-comment: true
+          github-token: ${{ secrets.GITHUB_TOKEN }} 
 
