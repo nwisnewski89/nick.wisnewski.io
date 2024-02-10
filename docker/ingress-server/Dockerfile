@@ -9,3 +9,4 @@ RUN rm -rf /etc/nginx/conf.d && rm -rf /etc/nginx/nginx.conf.default
 COPY ./docker/ingress-server/nginx.conf /etc/nginx/nginx.conf
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
+#build-me
