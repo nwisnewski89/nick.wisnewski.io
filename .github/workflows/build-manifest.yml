@@ -52,5 +52,5 @@ jobs:
             console.log(`Filtered changes: ${changes}`)
             const images = changes.filter(change => !change.includes('deploy'))
             console.log(`Docker images: ${images}`)
-            return images?.length ? images || 'false'
+            return images.length > 0 ? images || 'false'
             
