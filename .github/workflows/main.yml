@@ -24,7 +24,7 @@ jobs:
   build-docker:
     needs: set-build-manifest
     uses: ./.github/workflows/build-image.yml
-    if: ${{ needs.set-build-manifest.outputs.images != 'false' }}
+    if: ${{ fromJSON(needs.set-build-manifest.outputs.images) = 'false' }}
     with:
       images: ${{ needs.set-build-manifest.outputs.images }}
     secrets: inherit
