@@ -19,7 +19,7 @@ jobs:
   docker-check:
     needs: set-build-manifest
     uses: ./.github/workflows/build-image.yml
-    if: ${{ fromJSON(needs.set-build-manifest.outputs.images) != 'false' }}
+    if: ${{ fromJson(needs.set-build-manifest.outputs.images) != 'false' }}
     with:
       images: ${{ needs.set-build-manifest.outputs.images }}
 
