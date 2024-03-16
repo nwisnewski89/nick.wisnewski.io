@@ -35,7 +35,7 @@ jobs:
         with:
           filters: |
             site:
-              - ['src/**', 'content/**', 'docker/site/**', '*.js', 'package.json']
+              - ['src/**', 'content/**', 'docker/site/**', '*.js', 'package.json', 'package-lock.json']
             ingress-server:
               - 'docker/ingress-server/**'
             deploy-site-resources:
@@ -52,7 +52,5 @@ jobs:
             console.log(`Filtered changes: ${changes}`)
             const images = changes.filter(change => !change.includes('deploy'))
             console.log(`Docker images: ${images}`)
-            return images || 'false'
-
-      - run: echo '${{ steps.images.outputs.result  }}'
+            return images?.length ? images || 'false'
             
