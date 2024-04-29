@@ -1,9 +1,6 @@
 name: Main merge workflow
 
-on:
-  push:
-    branches:
-      - main
+on: workflow_dispatch
 
 permissions:
   pull-requests: write

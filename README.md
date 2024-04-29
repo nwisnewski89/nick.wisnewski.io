@@ -2,7 +2,7 @@
 
 - Leveraged the Gatsby.js [Starter Blog Template](https://www.gatsbyjs.com/starters/gatsbyjs/gatsby-starter-blog) and [Material UI](https://mui.com/material-ui/getting-started/) to create a simple resume site.
 - Built the static site into a docker image with an Nginx Server.
-- Created a free tier GCP account to host the application in GKE.
+- ~~Created a free tier GCP account to host the application in GKE. ~~
 - Utilized [KubeIP](https://github.com/doitintl/kubeIP) to avoid paying for an Ingress Load Balancer in order to keep costs down.
 - Modelled the ingress Nginx reverse proxy server from the blog [Affordable Kubernetes for Personal Projects](https://redmaple.tech/blogs/affordable-kubernetes-for-personal-projects/).
 - Bought the `wisnewski.io` domain and an SSL certificate for `nick.wisnewski.io`, leveraging GCP Cloud DNS.
@@ -32,8 +32,4 @@
 - Run `tfsec` scan on Terraform changes.
 - Post Terraform plan to PR for approval on Terraform changes.
 
-## Disclaimer
-
-And voila there is my crappy resume site [nick.wisnewski.io](https://nick.wisnewski.io)
-I am by no means a Web Developer :sweat_smile:. This was an exercise to gain experience in GCP and Kubernetes and showcase my skills with GitHub Actions.
-Will Trade CI :rocket: :ship: for CSS :nail_care:.
+### REHOSTING
