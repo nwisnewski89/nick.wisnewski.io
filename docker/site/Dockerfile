@@ -16,7 +16,7 @@ COPY . .
 
 RUN npm run build
 
-FROM nginx:1.24.0-alpine-slim AS server
+FROM nginx:1.26.1-alpine-slim AS server
 
 EXPOSE 8080
 
