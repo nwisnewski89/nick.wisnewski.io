@@ -15,7 +15,7 @@
     "@mui/icons-material": "^5.15.7",
     "@mui/material": "^5.15.7",
     "@mui/styled-engine-sc": "^6.0.0-alpha.11",
-    "gatsby": "^5.13.2",
+    "gatsby": "^5.14.1",
     "gatsby-plugin-feed": "^5.13.1",
     "gatsby-plugin-image": "^3.13.0",
     "gatsby-plugin-manifest": "^5.13.1",
