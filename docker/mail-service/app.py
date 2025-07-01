@@ -42,17 +42,8 @@ security = HTTPBearer()
 
 # Pydantic models
 class EmailRequest(BaseModel):
-    subject: str
     message: str
-    from_email: Optional[str] = None
-    
-    @validator('subject')
-    def validate_subject(cls, v):
-        if len(v.strip()) == 0:
-            raise ValueError('Subject cannot be empty')
-        if len(v) > 200:
-            raise ValueError('Subject too long (max 200 characters)')
-        return v.strip()
+    from_address: str
     
     @validator('message')
     def validate_message(cls, v):
@@ -62,8 +53,8 @@ class EmailRequest(BaseModel):
             raise ValueError('Message too long (max 10,000 characters)')
         return v.strip()
     
-    @validator('from_email')
-    def validate_from_email(cls, v):
+    @validator('from_address')
+    def validate_from_address(cls, v):
         if v:
             v = v.strip()
             # Basic email validation - just check for @ symbol
@@ -85,22 +76,15 @@ class SESService:
             aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
         )
         
-    def send_email(self, subject: str, message: str, from_name: Optional[str] = None) -> str:
+    def send_email(self, subject: str, message: str) -> str:
         """Send email via AWS SES"""
         try:
-            # Use verified domain as sender
             verified_domain = os.getenv('DOMAIN')
             if not verified_domain:
-                raise ValueError("VERIFIED_DOMAIN or DOMAIN environment variable must be set")
+                raise ValueError("VDOMAIN environment variable must be set")
             
-            # Use no-reply@domain as the sender (must be verified)
             sender = f"no-reply@{verified_domain}"
-            
-            # Add from name to message if provided
-            message_with_sender = message
-            if from_name:
-                message_with_sender = f"From: {from_name}\n\n{message}"
-            
+        
             response = self.ses.send_email(
                 Source=sender,
                 Destination={
@@ -113,7 +97,7 @@ class SESService:
                     },
                     'Body': {
                         'Text': {
-                            'Data': message_with_sender,
+                            'Data': message,
                             'Charset': 'UTF-8'
                         }
                     }
@@ -161,8 +145,8 @@ def rate_limit_check():
 
 # Rate limiting decorators
 @app.post("/contact", response_model=EmailResponse)
-@limiter.limit("1/minute", storage_uri="redis://localhost:6379")  
-@limiter.limit("10/hour", storage_uri="redis://localhost:6379")   
+@limiter.limit("1/minute")  
+@limiter.limit("10/hour")   
 async def contact(
     request: Request,
     email_request: EmailRequest,
@@ -191,9 +175,8 @@ async def contact(
     try:
         # Send email
         message_id = ses_service.send_email(
-            subject=email_request.subject,
-            message=email_request.message,
-            from_name=email_request.from_email
+            subject=f"Contact from {email_request.from_address}",
+            message=email_request.message
         )
         
         return EmailResponse(

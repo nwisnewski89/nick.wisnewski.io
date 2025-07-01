@@ -11,7 +11,7 @@ services:
       - AWS_ACCESS_KEY_ID=${ETCD_BACKUPS_ACCESS_KEY}
       - AWS_SECRET_ACCESS_KEY=${ETCD_BACKUPS_SECRET_KEY}
       - AWS_REGION=${AWS_REGION}
-      - ALLOWED_ORIGINS=http://localhost:8082
+      - ALLOWED_ORIGINS=http://localhost:8082,http://localhost:8000
       - API_KEY=test
       - TO_EMAIL=${TO_EMAIL}
       - DOMAIN=${DOMAIN}
