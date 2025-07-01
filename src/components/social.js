@@ -1,41 +1,49 @@
 import * as React from "react"
-import { StaticImage } from "gatsby-plugin-image"
+import { GatsbyImage, getImage } from "gatsby-plugin-image"
+import { useStaticQuery, graphql } from "gatsby"
+import { SOCIAL } from "../constants/constants"
 
 const Social = () => {
+  const data = useStaticQuery(graphql`
+    query {
+      linkedinLogo: file(relativePath: { eq: "LI-In-Bug.png" }) {
+        childImageSharp {
+          gatsbyImageData(
+            width: 30
+            height: 30
+            quality: 100
+            formats: [AUTO, WEBP, AVIF]
+          )
+        }
+      }
+      githubLogo: file(relativePath: { eq: "github-mark.png" }) {
+        childImageSharp {
+          gatsbyImageData(
+            width: 30
+            height: 30
+            quality: 100
+            formats: [AUTO, WEBP, AVIF]
+          )
+        }
+      }
+    }
+  `)
+
+  const imageMap = {
+    linkedin: getImage(data.linkedinLogo),
+    github: getImage(data.githubLogo),
+  }
+
   return (
     <div className="social">
-      <div className="linkedin">
-        <StaticImage
-          className="linkedin-logo"
-          src="../images/linkedin-logo.png"
-          alt="linkedin"
-          width={30}
-          hight={30}
-        />
-        <a
-          href="https://www.linkedin.com/in/nick-f-wisnewski"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Add me on Linkedin
-        </a>
-      </div>
-      <div className="github">
-        <StaticImage
-          className="github-logo"
-          src="../images/github-logo.png"
-          alt="github"
-          width={30}
-          hight={30}
-        />
-        <a
-          href="https://github.com/nwisnewski89/nick.wisnewski.io"
-          target="_blank"
-          rel="noreferrer"
-        >
-          How I Built This
-        </a>
-      </div>
+      {Object.entries(SOCIAL).map(([key, value]) => (
+        <div key={key} className={key + "-link"}>
+          <GatsbyImage className={key} image={imageMap[key]} alt={value.alt} />
+          <a href={value.link} target="_blank" rel="noreferrer">
+            {value.text}
+          </a>
+        </div>
+      ))}
     </div>
   )
 }

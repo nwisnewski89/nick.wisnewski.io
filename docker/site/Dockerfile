@@ -18,19 +18,18 @@ RUN npm run build
 
 FROM nginx:1.24.0-alpine-slim AS server
 
-EXPOSE 8080
+EXPOSE 8082
 
 RUN rm -rf /etc/nginx/conf.d
 
 RUN rm -rf /etc/nginx/nginx.conf.default
+  
+RUN mkdir /etc/nginx/templates
 
-COPY ./docker/site/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/site/default.conf.template /etc/nginx/templates
 
 WORKDIR /usr/share/nginx/html
 
 RUN rm -rf ./*
 
 COPY --from=build /app/public .
-
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
-#build-me

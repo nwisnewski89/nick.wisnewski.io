@@ -7,12 +7,15 @@
 /**
  * @type {import('gatsby').GatsbyConfig}
  */
+
+require("dotenv").config()
+
 module.exports = {
   siteMetadata: {
     title: `Nick Wisnewski`,
     author: {
       name: `Nick Wisnewski`,
-      summary: `Experienced, results-driven automation professional with a background in Cloud Engineering, DevOps, and Test Automation. Striving to solve problems for organizations throughout the software development life cycle. My IT career began in test automation, where I learned the importance of IAC and DevOps practices when provisioning test environments for different regression scenarios. The transition to focus more on DevOps was the natural next step in my career.`,
+      summary: `Experienced, results-driven automation professional with a background in Cloud Engineering, DevOps, and Test Automation. Striving to solve problems for organizations throughout the software development life cycle.`,
     },
     description: `Nick Wisnewski - DevOps Engineer - SDET - Platform Engineer`,
     siteUrl: `https://nick.wisnewski.io/`,

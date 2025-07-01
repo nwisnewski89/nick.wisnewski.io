@@ -5,12 +5,8 @@ on:
     outputs:
       build-site: 
         value: ${{ jobs.set-build-manifest.outputs.build-site }}
-      build-ingress: 
-        value: ${{ jobs.set-build-manifest.outputs.build-ingress }}
-      deploy-site-resources: 
-        value: ${{ jobs.set-build-manifest.outputs.deploy-site-resources }}
-      deploy-k8s-resources: 
-        value: ${{ jobs.set-build-manifest.outputs.deploy-k8s-resources }}
+      build-mail-service: 
+        value: ${{ jobs.set-build-manifest.outputs.build-mail-service }}
       changes: 
         value: ${{ jobs.set-build-manifest.outputs.changes }}
       images: 
@@ -21,38 +17,19 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       build-site: ${{ steps.changes.outputs.site }}
-      build-ingress: ${{ steps.changes.outputs.ingress-server }}
-      deploy-site-resources: ${{ steps.changes.outputs.site-resources }}
-      deploy-k8s-resources: ${{ steps.changes.outputs.k8s-resources }}
-      changes: ${{ steps.changes.outputs.changes }}
-      images: ${{ steps.images.outputs.result }}
+      build-mail-service: ${{ steps.changes.outputs.mail-service }}
+      images: ${{ steps.changes.outputs.images }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Get updated files
         uses: dorny/paths-filter@v3
-        id: changes
+        id: images
         with:
           filters: |
             site:
               - ['src/**', 'content/**', 'docker/site/**', '*.js', 'package.json', 'package-lock.json']
-            ingress-server:
-              - 'docker/ingress-server/**'
-            deploy-site-resources:
-              - 'terraform/modules/site-resources/**'
-            deploy-k8s-resources:
-              - 'terraform/modules/k8s-resources/**'
-      
-      - name: Set images for docker build
-        uses: actions/github-script@v7
-        id: images
-        with:
-          script: |
-            const changes = Array.from(${{ steps.changes.outputs.changes }})
-            console.log(`Filtered changes: ${changes}`)
-            const images = changes.filter(change => !change.includes('deploy'))
-            console.log(`Docker images: ${images}`)
-            const dockerImages = images.length > 0 ? images : 'false'
-            console.log(`Building: ${dockerImages}`)
-            return dockerImages
+            mail-service:
+              - 'docker/mail-service/**'
+    
             

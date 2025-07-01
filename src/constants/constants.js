@@ -1,3 +1,6 @@
+export const API_KEY = process.env.GATSBY_API_KEY || "test"
+export const API_URL = process.env.GATSBY_API_URL || "/api"
+
 export const SKILLS = [
   { name: "Python", link: "https://www.python.org/" },
   { name: "Groovy", link: "http://www.groovy-lang.org/" },
@@ -24,13 +27,20 @@ export const SKILLS = [
   { name: "Nginx", link: "https://nginx.org/en/" },
   { name: "Jenkins", link: "https://www.jenkins.io/" },
   { name: "Github Actions", link: "https://docs.github.com/en/actions" },
-  { name: "ElasticSearch", link: "https://www.elastic.co/elasticsearch" },
-  { name: "Beats", link: "https://www.elastic.co/beats" },
-  { name: "Sensu", link: "https://sensu.io/" },
+  { name: "ELK Stack", link: "https://www.elastic.co/elasticsearch" },
   { name: "Selenium", link: "https://www.selenium.dev/" },
   { name: "Playwright", link: "https://playwright.dev/" },
-  {
-    name: "Azure DevOps",
-    link: "https://azure.microsoft.com/en-us/products/devops/",
-  },
 ]
+
+export const SOCIAL = {
+  linkedin: {
+    link: `https://www.linkedin.com/in/nick-f-wisnewski`,
+    alt: "LinkedIn Profile",
+    text: "Connect on LinkedIn",
+  },
+  github: {
+    link: `https://github.com/nwisnewski89`,
+    alt: "GitHub Profile",
+    text: "Check out my GitHub",
+  },
+}
