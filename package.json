@@ -1,8 +1,8 @@
 {
   "name": "nick-wisnewski-io",
   "private": true,
-  "description": "Shameless self promotion to learn GKE",
-  "version": "0.1.0",
+  "description": "Self hosted resume and blog.",
+  "version": "0.2.0",
   "author": "Nick Wisnewski",
   "bugs": {
     "url": "https://github.com/nwisnewski89/nick.wisnewski.io/issues"
@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.15.7",
     "@mui/material": "^5.15.7",
     "@mui/styled-engine-sc": "^6.0.0-alpha.11",
+    "dotenv": "^17.0.1",
     "gatsby": "^5.13.2",
     "gatsby-plugin-feed": "^5.13.1",
     "gatsby-plugin-image": "^3.13.0",
@@ -46,14 +47,15 @@
   },
   "scripts": {
     "build": "gatsby build",
-    "dev": "gatsby develop",
+    "dev": "gatsby develop --port 8082",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "precommit": "echo 'Pre-commit checks...' && ./scripts/pre-commit.sh&& exit 0",
     "start": "gatsby develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
-    "docker": "docker-compose up --build -d"
+    "backend-up": "docker-compose up --build -d",
+    "backend-down": "docker-compose down --volumes --remove-orphans"
   },
   "pre-commit": [
     "precommit"

@@ -5,6 +5,7 @@ on: workflow_dispatch
 permissions:
   pull-requests: write
   contents: write
+  packages: write
 
 jobs:
   rebase:
@@ -25,75 +26,5 @@ jobs:
     with:
       images: ${{ needs.set-build-manifest.outputs.images }}
     secrets: inherit
-
-  deploy-site:
-    needs: [set-build-manifest, build-docker]
-    if: ${{ always() && needs.set-build-manifest.outputs.changes != '[]' && needs.build-docker.result != 'failure' }}
-    runs-on: ubuntu-latest
-    env:
-      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-      GITHUB_TOKEN: ${{ github.token }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: GCP site resources apply plan
-        if: ${{ needs.set-build-manifest.outputs.deploy-site-resources == 'true' }}
-        uses: dflook/terraform-apply@v1
-        with:
-          auto_approve: true
-          path: terraform/modules/site-resources
-          variables: |
-              project_id      = "${{ secrets.PROJECT_ID }}"
-              region          = "${{ secrets.REGION }}"
-              zone            = "${{ secrets.ZONE }}"
-              subnetwork_cidr = "${{ secrets.SUBNET_CIDR }}"
-              pods_cidr       = "${{ secrets.PODS_CIDR }}"
-              services_cidr   = "${{ secrets.SERVICES_CIDR }}"
-
-      - name: K8s resources apply plan
-        if: ${{ needs.set-build-manifest.outputs.deploy-k8s-resources == 'true' }}
-        uses: dflook/terraform-apply@v1
-        with:
-          auto_approve: true
-          path: terraform/modules/k8s-resources
-          variables: |
-              project_id      = "${{ secrets.PROJECT_ID }}"
-              region          = "${{ secrets.REGION }}"
-
-      - name: Install kubectl
-        if: ${{ needs.set-build-manifest.outputs.images != 'false' }}
-        id: kubectl
-        uses: azure/setup-kubectl@v3
-
-      - name: Authenticate to GCP
-        if: ${{ needs.set-build-manifest.outputs.images != 'false' }}
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
-          project_id: ${{ secrets.PROJECT_ID }}
-
-      - name: Authenticate to GKE
-        if: ${{ needs.set-build-manifest.outputs.images != 'false' }}
-        uses: google-github-actions/get-gke-credentials@v1
-        with:
-          cluster_name: wisnewski-k8s-cluster-prod 
-          location: ${{ secrets.REGION }}
-
-      - name: Restart site deployment
-        if: ${{ needs.set-build-manifest.outputs.build-site == 'true' }}
-        run: |
-          ${KUBECTL_PATH} scale deployment site --replicas=0 -n wisnewski-io 
-          ${KUBECTL_PATH} scale deployment site --replicas=1 -n wisnewski-io
-        env:
-          KUBECTL_PATH: ${{ steps.kubectl.outputs.kubectl-path }}
-
-      - name: Restart ingress-server deployment
-        if: ${{ needs.set-build-manifest.outputs.build-ingress == 'true' }}
-        run: |
-          ${KUBECTL_PATH} scale deployment ingress-server --replicas=0 -n wisnewski-io
-          ${KUBECTL_PATH} scale deployment ingress-server --replicas=1 -n wisnewski-io
-        env:
-          KUBECTL_PATH: ${{ steps.kubectl.outputs.kubectl-path }}
-
 
   

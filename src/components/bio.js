@@ -10,9 +10,6 @@ const Bio = () => {
           author {
             summary
           }
-          social {
-            linkedin
-          }
         }
       }
     }
@@ -26,15 +23,14 @@ const Bio = () => {
         className="bio-avatar"
         layout="fixed"
         formats={["auto", "webp", "avif"]}
-        src="../images/profile-pic.png"
-        width={50}
+        src="https://avatars.githubusercontent.com/u/30911393?v=4"
+        width={100}
         height={100}
         quality={100}
-        alt="Profile picture"
+        alt="Nick Wisnewski"
       />
       <p>
         {author?.summary || null}
-        {` `}
         <br />
         <br />
         Located in <b>Philadelphia, PA</b>.
